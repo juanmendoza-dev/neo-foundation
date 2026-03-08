@@ -603,10 +603,11 @@ body {
   will-change: transform;
 }
 
-.const-node-icon svg {
-  width: 24px;
-  height: 24px;
+.const-node-icon img {
+  width: 28px;
+  height: 28px;
   transition: filter 0.3s ease;
+  object-fit: contain;
 }
 
 .const-node-label {
