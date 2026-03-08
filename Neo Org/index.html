@@ -636,7 +636,19 @@
                             Lets launch your next project <span class="text-white drop-shadow-glow">together.</span>
                         </h1>
 
-                        <div class="flex md:flex-row md:space-y-0 space-x-2 md:space-x-4 mt-10">
+                        <!-- Contact Form -->
+                        <form action="mailto:neo33028@gmail.com" method="post" enctype="text/plain" class="contact-form mt-10 w-full max-w-md mx-auto px-4">
+                            <div class="flex flex-col gap-3">
+                                <input type="text" name="name" placeholder="Your Name" required class="contact-input">
+                                <input type="email" name="email" placeholder="Your Email" required class="contact-input">
+                                <textarea name="message" placeholder="Your Message" rows="3" required class="contact-input contact-textarea"></textarea>
+                                <button type="submit" class="contact-submit-btn mt-1">
+                                    Send Message
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="flex md:flex-row md:space-y-0 space-x-2 md:space-x-4 mt-8">
                             <a href="https://discord.gg/DjJVKeD9gh" target="_blank" aria-label="Join our Discord server">
                                 <div class="w-12 h-12 flex items-center justify-center">
                                     <img src="images/discord.webp" alt="Discord"
@@ -650,13 +662,6 @@
                                 </div>
                             </a>
                         </div>
-
-                        <a href="mailto:neo33028@gmail.com" target="_blank">
-                            <button
-                                class="w-28 h-10 hover:rotate-3 rounded-xl mt-4 bg-white text-black border border-black hover:text-white hover:bg-transparent hover:border-white hover:border-2 duration-500 transition-all text-sm">
-                                Email
-                            </button>
-                        </a>
 
                     </div>
 
@@ -701,56 +706,51 @@
 
 
                 <footer class="bg-black/10 backdrop-blur-[5px] w-full !z-[999999] text-white/80 py-6">
-                    <div class="container mx-auto flex flex-col md:flex-row md:justify-between items-center">
-                        <div class="flex items-center md:order-1">
-                            <img src="images/logo.webp" alt="Logo" class="h-10 w-auto">
-                            <nav class="ml-8">
-                                <ul class="flex">
-                                    <li class="mr-4">
-                                        <a href="#home">
-                                            <p
-                                                class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">
-                                                Home</p>
-                                        </a>
-                                    </li>
-                                    <li class="mr-4">
-                                        <a href="#skills">
-                                            <p
-                                                class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">
-                                                Skills</p>
-                                        </a>
-                                    </li>
-                                    <li class="mr-4">
-                                        <a href="#experience">
-                                            <p
-                                                class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">
-                                                Impact</p>
-                                        </a>
-                                    </li>
-                                    <li class="mr-4">
-                                        <a href="#events">
-                                            <p
-                                                class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">
-                                                Upcoming Events</p>
-                                        </a>
-                                    </li>
-                                    <li class="mr-4">
-                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSefvsXkC96gvDtfGqW2tng_unjjMV9jDhbUaewJF03SrIAm_Q/viewform?usp=header" target="_blank">
-                                            <p
-                                                class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">
-                                                Bug Bounty</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
+                    <div class="container mx-auto flex flex-col items-center gap-4 px-4">
+                        <!-- Top row: logo + nav + back to top -->
+                        <div class="w-full flex flex-col md:flex-row md:justify-between items-center">
+                            <div class="flex items-center md:order-1">
+                                <img src="images/logo.webp" alt="Logo" class="h-10 w-auto">
+                                <nav class="ml-8 hidden md:block">
+                                    <ul class="flex">
+                                        <li class="mr-4">
+                                            <a href="#home" class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">Home</a>
+                                        </li>
+                                        <li class="mr-4">
+                                            <a href="#skills" class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">Skills</a>
+                                        </li>
+                                        <li class="mr-4">
+                                            <a href="#experience" class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">Impact</a>
+                                        </li>
+                                        <li class="mr-4">
+                                            <a href="#events" class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">Events</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="md:order-2 mt-4 md:mt-0">
+                                <a href="#home">
+                                    <button class="backdrop-blur-[1.25px] hover:border-neutral-400 duration-300 transition-all ease border text-sm font-medium relative border-white/[0.2] text-white px-4 py-2 rounded-full">
+                                        <span>Back to Top</span>
+                                    </button>
+                                </a>
+                            </div>
                         </div>
-                        <div class="md:order-2 mt-4 md:mt-0">
-                            <a href="#home">
-                                <button
-                                    class="backdrop-blur-[1.25px] hover:border-neutral-400 duration-300 transition-all ease border text-sm font-medium relative border-white/[0.2] text-white px-4 py-2 rounded-full">
-                                    <span>Back to Top</span>
-                                </button>
+
+                        <!-- Social icons -->
+                        <div class="flex items-center gap-4 mt-2">
+                            <a href="https://discord.gg/DjJVKeD9gh" target="_blank" aria-label="Join our Discord server" class="hover:drop-shadow-glow hover:scale-105 duration-300 transition-all">
+                                <img src="images/discord.webp" alt="Discord" class="w-8 h-8 object-contain">
                             </a>
+                            <a href="https://www.instagram.com/theneo_org/" target="_blank" aria-label="Follow us on Instagram" class="hover:drop-shadow-glow hover:scale-105 duration-300 transition-all">
+                                <img src="images/insta_logo.webp" alt="Instagram" class="w-8 h-8 object-contain">
+                            </a>
+                        </div>
+
+                        <!-- Tagline + copyright -->
+                        <div class="text-center mt-2">
+                            <p class="text-neutral-500 text-xs">Where Innovation and Creativity meet.</p>
+                            <p class="text-neutral-600 text-xs mt-1">&copy; 2026 Neo Foundation. All rights reserved.</p>
                         </div>
                     </div>
                 </footer>
