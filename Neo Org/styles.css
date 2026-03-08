@@ -2325,6 +2325,37 @@ h1 {
     opacity: 1 !important;
     transform: translate(-50%, -40%) scale(1) !important;
   }
+
+  .animated-starfield,
+  .shooting-stars-container,
+  .title-sparkle-container,
+  .neo-floating-orbs {
+    display: none !important;
+  }
+
+  .animate-spin-slow,
+  .animate-reverse-spin,
+  .animate-pulse-slow,
+  .animate-float-1,
+  .animate-float-2,
+  .animate-float-3,
+  .glow-border,
+  .neo-orb,
+  .explosion-star {
+    animation: none !important;
+  }
+
+  .neo-event-card {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Low-end device optimizations */
@@ -3643,5 +3674,30 @@ select:focus-visible,
 
 .skip-to-main:focus {
   top: 0;
+}
+
+/* Toast notification */
+.neo-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  z-index: 10001;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.neo-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 

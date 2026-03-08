@@ -733,6 +733,28 @@ if (!window.ModernCursorLoaded && !isMobile) {
     };
 }
 
+// Toast notification
+function showToast(message) {
+    // Remove existing toast if any
+    const existing = document.querySelector('.neo-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'neo-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+        toast.classList.add('show');
+    });
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 2500);
+}
+
 // Optimized smooth scrolling
 function initSmoothScrolling() {
     // Cache elements for better performance
@@ -848,6 +870,9 @@ function initSmoothScrolling() {
             if (teamElement) {
                 smoothScrollTo(teamElement.offsetTop - 80);
             }
+        } else if (buttonText.includes('Join Us') || buttonText.includes('Learn More')) {
+            e.preventDefault();
+            showToast('Coming soon — check back later!');
         } else if (buttonText.includes('Explore More')) {
             e.preventDefault();
             e.stopImmediatePropagation();
