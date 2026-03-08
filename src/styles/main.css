@@ -478,8 +478,8 @@ body {
 }
 
 .const-map-panel {
-  width: 120vw;
-  padding: 4rem;
+  width: 160vw;
+  padding: 4rem 8rem;
 }
 
 /* ── Constellation Map Container ─────────── */
@@ -572,7 +572,6 @@ body {
   height: 80px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
   opacity: 0.2;
   pointer-events: none;
   will-change: transform, opacity;
@@ -586,10 +585,10 @@ body {
   height: 56px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  border: 1px solid rgba(6, 182, 212, 0.3);
+  border: 1px solid;
   opacity: 0.4;
   pointer-events: none;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   will-change: transform, opacity;
 }
 
@@ -607,14 +606,7 @@ body {
 .const-node-icon svg {
   width: 24px;
   height: 24px;
-  fill: var(--white);
-  filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.4));
   transition: filter 0.3s ease;
-}
-
-.const-node:hover .const-node-icon svg {
-  filter: drop-shadow(0 0 12px rgba(6, 182, 212, 0.8))
-         drop-shadow(0 0 24px rgba(107, 33, 168, 0.4));
 }
 
 .const-node-label {
@@ -626,11 +618,9 @@ body {
   font-size: 0.65rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--teal);
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.3s ease;
-  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
   pointer-events: none;
 }
 

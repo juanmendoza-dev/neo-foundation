@@ -5,6 +5,18 @@ gsap.registerPlugin(ScrollTrigger);
 
 // ── Skill data with positions on the star map ──
 // Positions are percentages within the constellation viewport
+// Brand colors for each skill
+const BRAND_COLORS = {
+  html:   { primary: '#E34F26', rgb: '227,79,38' },
+  css:    { primary: '#1572B6', rgb: '21,114,182' },
+  js:     { primary: '#F7DF1E', rgb: '247,223,30' },
+  python: { primary: '#3776AB', rgb: '55,118,171', accent: '#FFD43B' },
+  cpp:    { primary: '#00599C', rgb: '0,89,156' },
+  c:      { primary: '#A8B9CC', rgb: '168,185,204' },
+  linux:  { primary: '#FCC624', rgb: '252,198,36' },
+  vscode: { primary: '#007ACC', rgb: '0,122,204' },
+};
+
 const SKILLS = [
   { id: 'html',       label: 'HTML',       x: 12, y: 35, related: ['css', 'js'] },
   { id: 'css',        label: 'CSS',        x: 25, y: 18, related: ['html', 'js'] },
@@ -131,16 +143,24 @@ export function initConstellation() {
     node.style.top = `${skill.y}%`;
     node.dataset.index = index;
 
+    const brand = BRAND_COLORS[skill.id];
+    const color = brand.primary;
+    const rgb = brand.rgb;
+
     node.innerHTML = `
-      <div class="const-node-aura"></div>
-      <div class="const-node-ring"></div>
+      <div class="const-node-aura" style="background: radial-gradient(circle, rgba(${rgb}, 0.25) 0%, transparent 70%);"></div>
+      <div class="const-node-ring" style="border-color: ${color}40;"></div>
       <div class="const-node-icon">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill: ${color}; filter: drop-shadow(0 0 6px rgba(${rgb}, 0.5));">
           ${ICONS[skill.id]}
         </svg>
       </div>
-      <span class="const-node-label">${skill.label}</span>
+      <span class="const-node-label" style="color: ${color}; text-shadow: 0 0 10px rgba(${rgb}, 0.5);">${skill.label}</span>
     `;
+
+    // Store brand color on the node for hover reference
+    node.dataset.color = color;
+    node.dataset.rgb = rgb;
 
     nodesContainer.appendChild(node);
     nodeElements[skill.id] = node;
@@ -188,33 +208,47 @@ export function initConstellation() {
     const skill = SKILLS.find((s) => s.id === skillId);
 
     node.addEventListener('mouseenter', () => {
-      // Pulse and brighten the hovered node
+      const brand = BRAND_COLORS[skillId];
+      const color = brand.primary;
+      const rgb = brand.rgb;
+
+      // Pulse and brighten the hovered node with brand color glow
       gsap.to(node.querySelector('.const-node-icon'), {
         scale: 1.2,
         duration: 0.3,
         ease: 'back.out(2)',
       });
+      gsap.to(node.querySelector('.const-node-icon svg'), {
+        filter: `drop-shadow(0 0 12px rgba(${rgb}, 0.9)) drop-shadow(0 0 24px rgba(${rgb}, 0.5))`,
+        duration: 0.3,
+      });
       gsap.to(node.querySelector('.const-node-aura'), {
         scale: 1.8,
-        opacity: 0.5,
+        opacity: 0.6,
         duration: 0.4,
       });
       gsap.to(node.querySelector('.const-node-ring'), {
         scale: 1.3,
         opacity: 1,
-        borderColor: '#06B6D4',
+        borderColor: color,
+        boxShadow: `0 0 15px rgba(${rgb}, 0.3), inset 0 0 15px rgba(${rgb}, 0.1)`,
         duration: 0.3,
       });
       node.querySelector('.const-node-label').classList.add('visible');
 
-      // Show labels on related nodes
+      // Show labels on related nodes with their brand colors
       skill.related.forEach((relId) => {
         const relNode = nodeElements[relId];
         if (relNode) {
           relNode.querySelector('.const-node-label').classList.add('visible');
+          const relBrand = BRAND_COLORS[relId];
           gsap.to(relNode.querySelector('.const-node-aura'), {
             scale: 1.5,
-            opacity: 0.35,
+            opacity: 0.4,
+            duration: 0.4,
+          });
+          gsap.to(relNode.querySelector('.const-node-icon svg'), {
+            filter: `drop-shadow(0 0 10px rgba(${relBrand.rgb}, 0.7)) drop-shadow(0 0 20px rgba(${relBrand.rgb}, 0.4))`,
             duration: 0.4,
           });
         }
@@ -268,9 +302,16 @@ export function initConstellation() {
     });
 
     node.addEventListener('mouseleave', () => {
+      const brand = BRAND_COLORS[skillId];
+      const rgb = brand.rgb;
+
       // Reset hovered node
       gsap.to(node.querySelector('.const-node-icon'), {
         scale: 1,
+        duration: 0.3,
+      });
+      gsap.to(node.querySelector('.const-node-icon svg'), {
+        filter: `drop-shadow(0 0 6px rgba(${rgb}, 0.5))`,
         duration: 0.3,
       });
       gsap.to(node.querySelector('.const-node-aura'), {
@@ -281,7 +322,8 @@ export function initConstellation() {
       gsap.to(node.querySelector('.const-node-ring'), {
         scale: 1,
         opacity: 0.4,
-        borderColor: 'rgba(6, 182, 212, 0.3)',
+        borderColor: `${brand.primary}40`,
+        boxShadow: 'none',
         duration: 0.3,
       });
       node.querySelector('.const-node-label').classList.remove('visible');
@@ -289,11 +331,16 @@ export function initConstellation() {
       // Reset related nodes
       skill.related.forEach((relId) => {
         const relNode = nodeElements[relId];
+        const relBrand = BRAND_COLORS[relId];
         if (relNode) {
           relNode.querySelector('.const-node-label').classList.remove('visible');
           gsap.to(relNode.querySelector('.const-node-aura'), {
             scale: 1,
             opacity: 0.2,
+            duration: 0.4,
+          });
+          gsap.to(relNode.querySelector('.const-node-icon svg'), {
+            filter: `drop-shadow(0 0 6px rgba(${relBrand.rgb}, 0.5))`,
             duration: 0.4,
           });
         }
@@ -392,15 +439,20 @@ export function initConstellation() {
   const track = document.querySelector('.constellation-track');
 
   if (wrapper && track) {
-    const totalScroll = track.scrollWidth - window.innerWidth;
+    // Calculate total scroll distance dynamically from actual content
+    const getScrollAmount = () => {
+      return track.scrollWidth - window.innerWidth;
+    };
 
     gsap.to(track, {
-      x: () => -totalScroll,
+      x: () => -getScrollAmount(),
       ease: 'none',
       scrollTrigger: {
         trigger: wrapper,
         start: 'top top',
-        end: () => `+=${totalScroll}`,
+        // Extra multiplier (1.2) ensures the scroll duration is long enough
+        // for the user to see the full map comfortably without rushing
+        end: () => `+=${getScrollAmount() * 1.2}`,
         pin: true,
         scrub: 1,
         anticipatePin: 1,
