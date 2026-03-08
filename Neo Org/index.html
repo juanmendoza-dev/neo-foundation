@@ -32,6 +32,8 @@
 </head>
 
 <body>
+    <a href="#home" class="skip-to-main">Skip to main content</a>
+
     <!-- Particles Container -->
     <div id="particles-hero" style="position: relative; overflow: hidden;"></div>
     
@@ -65,7 +67,7 @@
                         <a href="#contact">Contact</a>
                     </button>
                     <div class="performance-toggle-container hidden md:flex">
-                        <div class="performance-toggle" id="performance-toggle">
+                        <div class="performance-toggle" id="performance-toggle" role="button" tabindex="0" aria-label="Toggle performance mode">
                             <div class="performance-toggle-slider"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="perf-icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
                         </div>
                         <span class="performance-toggle-label">Performance Mode</span>
@@ -611,13 +613,13 @@
                         </h1>
 
                         <div class="flex md:flex-row md:space-y-0 space-x-2 md:space-x-4 mt-10">
-                            <a href="https://discord.gg/DjJVKeD9gh" target="_blank">
+                            <a href="https://discord.gg/DjJVKeD9gh" target="_blank" aria-label="Join our Discord server">
                                 <div class="w-12 h-12 flex items-center justify-center">
                                     <img src="images/discord.webp" alt="Discord"
                                         class="max-w-full max-h-full object-contain hover:drop-shadow-glow hover:scale-105 duration-300 transition-all">
                                 </div>
                             </a>
-                            <a href="https://www.instagram.com/theneo_org/" target="_blank">
+                            <a href="https://www.instagram.com/theneo_org/" target="_blank" aria-label="Follow us on Instagram">
                                 <div class="w-12 h-12 flex items-center justify-center">
                                     <img src="images/insta_logo.webp" alt="Instagram"
                                         class="max-w-full max-h-full object-contain hover:drop-shadow-glow hover:scale-105 duration-300 transition-all">
