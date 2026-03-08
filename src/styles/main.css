@@ -627,3 +627,73 @@ body {
 .const-node-label.visible {
   opacity: 1;
 }
+
+/* ── Scratch Gateway Node ────────────────── */
+.const-node-gateway {
+  z-index: 4;
+}
+
+.const-node-gateway .const-node-aura {
+  width: 100px;
+  height: 100px;
+}
+
+.const-node-gateway .const-node-ring {
+  width: 64px;
+  height: 64px;
+  border-width: 1.5px;
+  border-style: dashed;
+}
+
+.const-gateway-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(77, 151, 255, 0.12);
+  pointer-events: none;
+  animation: gateway-orbit-spin 12s linear infinite;
+}
+
+.const-gateway-orbit::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: #4D97FF;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(77, 151, 255, 0.6);
+  transform: translateX(-50%);
+}
+
+@keyframes gateway-orbit-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.const-gateway-tag {
+  position: absolute;
+  top: calc(100% + 30px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #4D97FF;
+  white-space: nowrap;
+  opacity: 0.6;
+  pointer-events: none;
+  text-shadow: 0 0 12px rgba(77, 151, 255, 0.4);
+  animation: gateway-tag-pulse 3s ease-in-out infinite;
+}
+
+@keyframes gateway-tag-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 0.8; }
+}
