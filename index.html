@@ -7,6 +7,19 @@
   <link rel="stylesheet" href="/src/styles/main.css" />
 </head>
 <body>
+  <!-- Scroll progress indicator -->
+  <div class="scroll-progress">
+    <svg class="scroll-progress-ring" viewBox="0 0 36 36">
+      <circle class="scroll-progress-bg" cx="18" cy="18" r="16" />
+      <circle class="scroll-progress-fill" cx="18" cy="18" r="16" />
+    </svg>
+    <span class="scroll-progress-dot"></span>
+  </div>
+
+  <!-- Drifting asteroid -->
+  <div class="asteroid asteroid-1"></div>
+  <div class="asteroid asteroid-2"></div>
+
   <!-- Custom cursor -->
   <div class="cursor-reticle">
     <div class="cursor-ring"></div>
@@ -31,6 +44,38 @@
       </p>
     </div>
     <div class="shooting-star"></div>
+  </section>
+
+  <!-- Orbital divider -->
+  <div class="orbital-divider">
+    <div class="orbital-line"></div>
+    <div class="orbital-dot"></div>
+  </div>
+
+  <!-- Chapter 1 — Who We Are -->
+  <section id="chapter-1" class="chapter chapter-1" data-bg="#0d0b1a">
+    <div class="chapter-number-bg" aria-hidden="true">01</div>
+    <div class="chapter-content">
+      <span class="chapter-label">Chapter 01</span>
+      <h2 class="chapter-title reveal-text">WHO WE ARE</h2>
+      <div class="mission-block">
+        <p class="mission-line reveal-line">
+          Neo Foundation is a nonprofit built around
+        </p>
+        <p class="mission-line reveal-line">
+          <span class="highlight-teal">curiosity</span> and <span class="highlight-purple">creativity</span>.
+        </p>
+        <p class="mission-line reveal-line">
+          We believe anyone can shape the future
+        </p>
+        <p class="mission-line reveal-line">
+          with the right <span class="highlight-gold">tools</span> and <span class="highlight-gold">support</span>.
+        </p>
+      </div>
+      <div class="mission-sub reveal-fade">
+        <p>We teach technology, foster community, and open doors for the next generation of builders — regardless of background, experience, or where they come from.</p>
+      </div>
+    </div>
   </section>
 
   <script type="module" src="/src/js/main.js"></script>

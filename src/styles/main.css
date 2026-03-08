@@ -200,3 +200,208 @@ body {
   z-index: 2;
   box-shadow: 0 0 6px var(--teal), 0 0 15px rgba(6, 182, 212, 0.4);
 }
+
+/* ── Scroll Progress Indicator ───────────── */
+.scroll-progress {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 36px;
+  height: 36px;
+  z-index: 9000;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.scroll-progress.visible {
+  opacity: 1;
+}
+
+.scroll-progress-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.scroll-progress-bg {
+  fill: none;
+  stroke: rgba(226, 232, 240, 0.1);
+  stroke-width: 2;
+}
+
+.scroll-progress-fill {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 100.53;
+  stroke-dashoffset: 100.53;
+  filter: drop-shadow(0 0 4px var(--teal));
+}
+
+.scroll-progress-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: var(--teal);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 6px var(--teal);
+}
+
+/* ── Drifting Asteroids ──────────────────── */
+.asteroid {
+  position: fixed;
+  border-radius: 40% 60% 50% 50%;
+  background: linear-gradient(135deg, #2a2a3a, #1a1a2a);
+  box-shadow: inset -3px -3px 6px rgba(0, 0, 0, 0.5), inset 2px 2px 4px rgba(226, 232, 240, 0.05);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+}
+
+.asteroid-1 {
+  width: 12px;
+  height: 10px;
+  top: 30%;
+  left: -20px;
+}
+
+.asteroid-2 {
+  width: 8px;
+  height: 7px;
+  top: 65%;
+  right: -20px;
+}
+
+/* ── Orbital Divider ─────────────────────── */
+.orbital-divider {
+  position: relative;
+  z-index: 1;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.orbital-line {
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--purple), var(--teal), var(--purple), transparent);
+  opacity: 0.4;
+  transition: none;
+}
+
+.orbital-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--teal);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--teal), 0 0 20px rgba(6, 182, 212, 0.3);
+  opacity: 0;
+}
+
+/* ── Chapter — Shared ────────────────────── */
+.chapter {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  overflow: hidden;
+}
+
+.chapter-number-bg {
+  position: absolute;
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(15rem, 30vw, 30rem);
+  font-weight: 700;
+  color: rgba(226, 232, 240, 0.02);
+  letter-spacing: 0.05em;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  z-index: 0;
+  will-change: transform;
+}
+
+.chapter-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  width: 100%;
+}
+
+.chapter-label {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--teal);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  padding: 0.4em 1.2em;
+  margin-bottom: 2rem;
+  opacity: 0;
+}
+
+.chapter-title {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  margin-bottom: 3rem;
+  color: var(--white);
+}
+
+/* ── Chapter 1 — Who We Are ──────────────── */
+.mission-block {
+  margin-bottom: 2.5rem;
+}
+
+.mission-line {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--white);
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.highlight-teal {
+  color: var(--teal);
+  font-weight: 600;
+}
+
+.highlight-purple {
+  color: var(--purple);
+  font-weight: 600;
+}
+
+.highlight-gold {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.mission-sub {
+  max-width: 600px;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.mission-sub p {
+  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+  line-height: 1.8;
+  color: rgba(226, 232, 240, 0.6);
+  font-weight: 300;
+}
