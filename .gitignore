@@ -8,3 +8,12 @@ desktop.ini
 
 # Environment
 .env
+
+# Dependencies
+node_modules
+
+# Build
+dist
+
+# Misc
+*.local
