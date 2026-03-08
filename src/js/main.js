@@ -4,6 +4,8 @@ import { initCursor } from './cursor.js';
 import { initHero } from './hero.js';
 import { initScroll } from './scroll.js';
 import { initConstellation } from './constellation.js';
+import { initImpact } from './impact.js';
+import { initCrew } from './crew.js';
 
 // ── Smooth scroll ───────────────────────────
 const lenis = new Lenis({
@@ -19,3 +21,5 @@ initCursor();
 initHero();
 initScroll(lenis);
 initConstellation();
+initImpact();
+initCrew();
