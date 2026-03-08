@@ -16,6 +16,7 @@ export function initScroll(lenis) {
   initAsteroids();
   initOrbitalDividers();
   initChapter1();
+  initChapter2Intro();
   initParallaxNumbers();
 }
 
@@ -219,6 +220,82 @@ function initChapter1() {
       toggleActions: 'play none none reverse',
     },
   });
+}
+
+// ── Chapter 2 Intro Animations ──────────
+function initChapter2Intro() {
+  const wrapper = document.querySelector('.chapter-2-wrapper');
+  if (!wrapper) return;
+
+  const label = wrapper.querySelector('.ch2-label');
+  const title = wrapper.querySelector('.ch2-title');
+  const subtitle = wrapper.querySelector('.ch2-subtitle');
+
+  // Chapter label
+  if (label) {
+    gsap.to(label, {
+      opacity: 1,
+      duration: 0.8,
+      scrollTrigger: {
+        trigger: wrapper,
+        start: 'top 70%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+  }
+
+  // Chapter title
+  if (title) {
+    gsap.to(title, {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      duration: 1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: wrapper,
+        start: 'top 65%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+  }
+
+  // Subtitle
+  if (subtitle) {
+    gsap.fromTo(
+      subtitle,
+      { opacity: 0, y: 20 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: wrapper,
+          start: 'top 55%',
+          toggleActions: 'play none none reverse',
+        },
+      }
+    );
+  }
+
+  // Background shift for chapter 2
+  const bg = wrapper.dataset.bg;
+  if (bg) {
+    ScrollTrigger.create({
+      trigger: wrapper,
+      start: 'top 80%',
+      end: 'top 20%',
+      onUpdate: (self) => {
+        const startColor = [10, 10, 15];
+        const endColor = hexToRgb(bg);
+        const r = Math.round(startColor[0] + (endColor[0] - startColor[0]) * self.progress);
+        const g = Math.round(startColor[1] + (endColor[1] - startColor[1]) * self.progress);
+        const b = Math.round(startColor[2] + (endColor[2] - startColor[2]) * self.progress);
+        document.documentElement.style.background = `rgb(${r},${g},${b})`;
+      },
+    });
+  }
 }
 
 // ── Parallax Chapter Numbers ────────────

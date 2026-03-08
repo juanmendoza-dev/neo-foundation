@@ -3,6 +3,7 @@ import { initStarfield } from './starfield.js';
 import { initCursor } from './cursor.js';
 import { initHero } from './hero.js';
 import { initScroll } from './scroll.js';
+import { initConstellation } from './constellation.js';
 
 // ── Smooth scroll ───────────────────────────
 const lenis = new Lenis({
@@ -17,3 +18,4 @@ initStarfield(canvas);
 initCursor();
 initHero();
 initScroll(lenis);
+initConstellation();

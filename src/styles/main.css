@@ -405,3 +405,235 @@ body {
   color: rgba(226, 232, 240, 0.6);
   font-weight: 300;
 }
+
+/* ── Chapter 2 — What We Teach ───────────── */
+.chapter-2-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.chapter-number-bg-h {
+  position: absolute;
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(15rem, 30vw, 30rem);
+  font-weight: 700;
+  color: rgba(226, 232, 240, 0.02);
+  letter-spacing: 0.05em;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  z-index: 0;
+  will-change: transform;
+}
+
+.constellation-track {
+  display: flex;
+  height: 100vh;
+  will-change: transform;
+}
+
+.const-panel {
+  flex-shrink: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.const-intro-panel {
+  width: 100vw;
+  text-align: center;
+  padding: 4rem;
+}
+
+.const-intro-panel .chapter-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.ch2-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-weight: 300;
+  color: rgba(226, 232, 240, 0.5);
+  line-height: 1.8;
+  margin-top: -1rem;
+}
+
+.ch2-label {
+  opacity: 0;
+}
+
+.ch2-title {
+  opacity: 0;
+  transform: translateY(30px);
+  filter: blur(6px);
+}
+
+.const-map-panel {
+  width: 120vw;
+  padding: 4rem;
+}
+
+/* ── Constellation Map Container ─────────── */
+.constellation-map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Star Chart Grid ─────────────────────── */
+.const-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.const-grid-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.grid-line {
+  stroke: rgba(6, 182, 212, 0.04);
+  stroke-width: 0.5;
+}
+
+.grid-label {
+  fill: rgba(6, 182, 212, 0.1);
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+}
+
+/* ── Constellation SVG Lines ─────────────── */
+.constellation-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.const-line-bg {
+  stroke: rgba(6, 182, 212, 0.06);
+  stroke-width: 1;
+}
+
+.const-line-active {
+  stroke: var(--teal);
+  stroke-width: 1.5;
+  filter: url(#glow-line);
+  opacity: 0.8;
+}
+
+.const-travel-dot {
+  fill: var(--teal);
+  opacity: 0;
+  filter: url(#glow-strong);
+}
+
+/* ── Constellation Nodes ─────────────────── */
+.constellation-nodes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.const-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: none;
+  z-index: 3;
+  will-change: transform, opacity;
+}
+
+.const-node-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+  opacity: 0.2;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.const-node-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 56px;
+  height: 56px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  opacity: 0.4;
+  pointer-events: none;
+  transition: border-color 0.3s ease;
+  will-change: transform, opacity;
+}
+
+.const-node-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  will-change: transform;
+}
+
+.const-node-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--white);
+  filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.4));
+  transition: filter 0.3s ease;
+}
+
+.const-node:hover .const-node-icon svg {
+  filter: drop-shadow(0 0 12px rgba(6, 182, 212, 0.8))
+         drop-shadow(0 0 24px rgba(107, 33, 168, 0.4));
+}
+
+.const-node-label {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--teal);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+  pointer-events: none;
+}
+
+.const-node-label.visible {
+  opacity: 1;
+}
