@@ -50,6 +50,7 @@ function createAnimatedStarfield() {
     // reduced star count for mobile devices DO NOT CHANGE THIS IT TOOK SOO LONG
     const starCount = isMobile ? 75 : isLowPowerDevice ? 100 : 150;
     const starsData = [];
+    let starKeyframes = '';
 
     for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
@@ -88,20 +89,24 @@ function createAnimatedStarfield() {
         }
 
         if (!isMobile) {
-            const styleSheet = document.createElement('style');
-            styleSheet.textContent = `
+            starKeyframes += `
                 @keyframes starFloat${i} {
                     0%, 100% { transform: translate(0, 0) scale(1); }
                     25% { transform: translate(${Math.random() * moveDistance - moveDistance / 2}px, ${Math.random() * moveDistance - moveDistance / 2}px) scale(${0.8 + Math.random() * 0.4}); }
                     50% { transform: translate(${Math.random() * moveDistance - moveDistance / 2}px, ${Math.random() * moveDistance - moveDistance / 2}px) scale(${1.1 + Math.random() * 0.3}); }
                     75% { transform: translate(${Math.random() * moveDistance - moveDistance / 2}px, ${Math.random() * moveDistance - moveDistance / 2}px) scale(${0.9 + Math.random() * 0.2}); }
-                }
-            `;
-            document.head.appendChild(styleSheet);
+                }`;
         }
 
         starfieldContainer.appendChild(star);
         starsData.push({ element: star, x, y, size, opacity });
+    }
+
+    // Batch all keyframes into a single style element instead of one per star
+    if (starKeyframes) {
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = starKeyframes;
+        document.head.appendChild(styleSheet);
     }
 
     return starsData;
@@ -210,13 +215,13 @@ if (!window.ParticleSystemLoaded) {
         }
 
         animate() {
-            if (!this.isActive) {
+            if (!this.isActive || performanceModeActive) {
                 requestAnimationFrame(() => this.animate());
                 return;
             }
 
             const now = Date.now();
-            if (now - this.lastFrame < 16) { // 60fps for smoother animations when performance mode is off
+            if (now - this.lastFrame < 16) { // 60fps for smoother animations
                 requestAnimationFrame(() => this.animate());
                 return;
             }
@@ -735,7 +740,8 @@ function initSmoothScrolling() {
         skills: null,
         impact: null,
         events: null,
-        contact: null
+        contact: null,
+        team: null
     };
 
     // Function to get or cache elements
@@ -835,6 +841,13 @@ function initSmoothScrolling() {
             e.preventDefault();
             // Instant window open
             window.open('https://docs.google.com/forms/d/e/1FAIpQLSeUiyniG11EnmR295nUgYSuJxr95QL5w3PdvM92lKQ0ukaeOw/viewform?usp=dialog', '_blank');
+        } else if (buttonText.includes('Meet our Staff')) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            const teamElement = getElement('team', '#team');
+            if (teamElement) {
+                smoothScrollTo(teamElement.offsetTop - 80);
+            }
         } else if (buttonText.includes('Explore More')) {
             e.preventDefault();
             e.stopImmediatePropagation();
@@ -1127,6 +1140,7 @@ function togglePerformanceMode() {
         const style = document.createElement('style');
         style.id = 'performance-mode-styles';
         style.textContent = `
+            /* Hide decorative particle/star elements */
             .animated-starfield,
             .shooting-stars-container,
             .title-sparkle-container,
@@ -1138,15 +1152,23 @@ function togglePerformanceMode() {
                 display: none !important;
             }
 
-            * {
-                animation-duration: 0.2s !important;
-                transition-duration: 0.15s !important;
-            }
-
+            /* Only slow down decorative animations, not UI interactions */
             .spinning {
-                animation-duration: 10s !important;
+                animation-duration: 30s !important;
             }
 
+            .glow-border,
+            .animate-spotlight,
+            .animate-spin-slow,
+            .animate-pulse-slow,
+            .animate-reverse-spin,
+            .animate-float-1,
+            .animate-float-2,
+            .animate-float-3 {
+                animation: none !important;
+            }
+
+            /* Remove expensive backdrop blur — replace with solid bg */
             .backdrop-blur-xl,
             .backdrop-blur-\\[5px\\],
             .backdrop-blur-\\[1\\.25px\\] {
@@ -1154,10 +1176,18 @@ function togglePerformanceMode() {
                 background-color: rgba(0, 0, 0, 0.7) !important;
             }
 
+            /* Simplify glow filters */
             .drop-shadow-glow,
             .hover\\:drop-shadow-glow:hover {
                 filter: none !important;
                 text-shadow: 0 0 5px rgba(255, 255, 255, 0.3) !important;
+            }
+
+            /* Disable box-shadow glow effects on skill cards */
+            .glowhtml, .glowcss, .glowjs, .glowtw,
+            .glowreact, .glownext, .glowvercel,
+            .glowfigma, .glowps {
+                box-shadow: none !important;
             }
         `;
         document.head.appendChild(style);
@@ -1193,6 +1223,22 @@ function initPerformanceToggle() {
     });
 }
 
+// Show/hide fixed nav on scroll
+function initFixedNavScroll() {
+    const fixedNav = document.querySelector('.fixed.top-10');
+    if (!fixedNav) return;
+
+    fixedNav.style.transition = 'transform 0.3s ease';
+
+    window.addEventListener('scroll', throttle(() => {
+        if (window.scrollY > 300) {
+            fixedNav.style.transform = 'translateY(0) translateZ(0)';
+        } else {
+            fixedNav.style.transform = 'translateY(-100px) translateZ(0)';
+        }
+    }, 100), { passive: true });
+}
+
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize based on device capabilities
@@ -1202,6 +1248,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initSmoothScrolling();
     initPerformanceToggle();
+    initFixedNavScroll();
 
     // delay fat animations for better initial load
     setTimeout(() => {

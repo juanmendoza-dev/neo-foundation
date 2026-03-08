@@ -6,22 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Critical Resources Only -->
-    <link rel="preload" href="/_next/static/media/a34f9d1faa5f3315-s.p.woff2" as="font" crossorigin=""
-        type="font/woff2">
-    <link rel="preload" as="image" href="images/logo.png">
+    <link rel="preload" href="fonts/inter-latin.woff2" as="font" crossorigin="" type="font/woff2">
+    <link rel="preload" as="image" href="images/logo.webp">
     <link rel="preload" as="image" href="images/sparkle.webp">
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="styles.css" crossorigin="" data-precedence="next">
+    <link rel="stylesheet" href="styles.css">
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/odometer@0.4.8/odometer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/odometer@0.4.8/odometer.min.js" defer></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/odometer@0.4.8/themes/odometer-theme-default.css">
     <script src="script.js" defer></script>
 
 
-    <title>Non Profit</title>
+    <title>Neo Foundation</title>
 </head>
 
 <body>
@@ -30,7 +29,7 @@
     
     <!-- Performance Mode Indicator -->
     <div class="performance-mode-indicator" id="performance-indicator">
-        ⚡ Performance Mode Active
+        Performance Mode Active
     </div>
 
     <div>
@@ -38,15 +37,15 @@
         <nav class="p-4 mt-2">
             <div class="container mx-auto flex items-center justify-between">
                 <div class="flex items-center">
-                    <img src="images/logo.webp" style="width: 125px !important; max-width: none !important;">
+                    <img src="images/logo.webp" alt="Neo Foundation logo" style="width: 125px !important; max-width: none !important;">
                     <div class="ml-12 flex space-x-6">
-                        <a
+                        <a href="#home"
                             class="hidden md:block cursor-pointer text-gray-200 hover:drop-shadow-glow transition-all duration-300 label hover:text-white">Home</a>
-                        <a
+                        <a href="#skills"
                             class="hidden md:block cursor-pointer text-gray-200 hover:drop-shadow-glow transition-all duration-300 label hover:text-white">Skills</a>
-                        <a
+                        <a href="#experience"
                             class="hidden md:block cursor-pointer text-gray-200 hover:drop-shadow-glow transition-all duration-300 label hover:text-white">Impact</a>
-                        <a
+                        <a href="#events"
                             class="hidden md:block cursor-pointer text-gray-200 hover:drop-shadow-glow transition-all duration-300 label hover:text-white">Upcoming Events</a>
                         <a href="https://docs.google.com/forms/d/e/1FAIpQLSefvsXkC96gvDtfGqW2tng_unjjMV9jDhbUaewJF03SrIAm_Q/viewform?usp=header" target="_blank"
                             class="hidden md:block cursor-pointer text-gray-200 hover:drop-shadow-glow transition-all duration-300 label hover:text-white">Bug Bounty</a>
@@ -55,11 +54,11 @@
                 <div class="flex items-center">
                     <button
                         class="backdrop-blur-[1.25px] hover:border-neutral-400 duration-300 transition-all ease border text-sm font-medium relative border-white/[0.2] text-white px-4 py-2 rounded-full">
-                        <a>Contact</a>
+                        <a href="#contact">Contact</a>
                     </button>
                     <div class="performance-toggle-container">
                         <div class="performance-toggle" id="performance-toggle">
-                            <div class="performance-toggle-slider">⚡</div>
+                            <div class="performance-toggle-slider"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="perf-icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
                         </div>
                         <span class="performance-toggle-label">Performance Mode</span>
                     </div>
@@ -70,24 +69,24 @@
         <!-- Fixed Navigation Bar -->
         <div class="md:flex max-w-fit md:visible hidden fixed top-10 inset-x-0 mx-auto border border-white/[0.2] rounded-full bg-[#767676]/20 backdrop-blur shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] z-[5000] pr-2 pl-8 py-2 items-center justify-center space-x-4"
             style="opacity:1;transform:translateY(-100px) translateZ(0)">
-            <a
+            <a href="#home"
                 class="hidden md:block cursor-pointer text-gray-200 hover:drop-shadow-glow transition-all duration-300 label hover:text-white">Home</a>
-            <a
+            <a href="#skills"
                 class="hidden md:block cursor-pointer text-gray-200 hover:drop-shadow-glow transition-all duration-300 label hover:text-white">Skills</a>
-            <a
+            <a href="#experience"
                 class="hidden md:block cursor-pointer text-gray-200 hover:drop-shadow-glow transition-all duration-300 label hover:text-white">Impact</a>
-            <a
+            <a href="#events"
                 class="hidden md:block cursor-pointer text-gray-200 hover:drop-shadow-glow transition-all duration-300 label hover:text-white">Upcoming Events</a>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSefvsXkC96gvDtfGqW2tng_unjjMV9jDhbUaewJF03SrIAm_Q/viewform?usp=header" target="_blank"
                 class="hidden md:block cursor-pointer text-gray-200 hover:drop-shadow-glow transition-all duration-300 label hover:text-white">Bug Bounty</a>
             <div class="flex items-center">
                 <button
                     class="backdrop-blur-[1.25px] hover:border-neutral-400 duration-300 transition-all ease border text-sm font-medium relative border-white/[0.2] text-white px-4 py-2 rounded-full">
-                    <a>Contact</a>
+                    <a href="#contact">Contact</a>
                 </button>
                 <div class="performance-toggle-container">
                     <div class="performance-toggle" id="performance-toggle-fixed">
-                        <div class="performance-toggle-slider">⚡</div>
+                        <div class="performance-toggle-slider"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="perf-icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
                     </div>
                     <span class="performance-toggle-label">Performance Mode</span>
                 </div>
@@ -158,12 +157,12 @@
                         <span class="text-white">anyone</span> can shape the future with the right tools and support.
                     </p>
 
-                    <a>
+                    <a href="#team">
                         <button
                             class="mx-auto mt-12 flex backdrop-blur-[1.25px] hover:border-neutral-400 hover:scale-105 hover:rotate-2 duration-300 transition-all ease border text-sm font-medium relative border-white/[0.2] text-white px-8 py-2 rounded-full">
                             <div class="flex items-center">
                                 <span class="flex items-center">
-                                    <img src="images/sparkle.webp" class="mr-2 w-6">Meet our Staff!
+                                    <img src="images/sparkle.webp" alt="Sparkle icon" class="mr-2 w-6">Meet our Staff!
                                 </span>
                             </div>
                         </button>
@@ -172,7 +171,60 @@
 
                 <!-- Spinning Element -->
                 <div class="flex left-[-37rem] -mt-[17rem] md:left-[-25rem] md:-mt-[11rem] spin absolute">
-                    <img src="images/looper.webp" class="w-[45rem] 2xl:w-[55rem] spinning">
+                    <img src="images/looper.webp" alt="Decorative spinning graphic" class="w-[45rem] 2xl:w-[55rem] spinning">
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div id="team" class="flex flex-col items-center justify-center py-24 md:py-32 relative">
+            <h1 class="text-5xl md:text-6xl 2xl:text-7xl pb-2 font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">
+                Meet Our Team
+            </h1>
+            <p class="mt-4 font-normal text-xl text-neutral-400 max-w-3xl text-center mx-auto">
+                The people behind the <span class="text-white">mission</span>.
+            </p>
+
+            <div class="bg-[#c4c4c4] w-[12rem] h-[6rem] blur-[5rem] -mt-[5rem] z-[-20]"></div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-16 px-6 max-w-5xl mx-auto">
+                <!-- Team Member 1 -->
+                <div class="team-card group">
+                    <div class="team-card-inner">
+                        <div class="team-avatar">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="w-16 h-16 text-neutral-500">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-white font-semibold text-lg mt-4">Team Member</h3>
+                        <p class="text-neutral-400 text-sm mt-1">Founder</p>
+                    </div>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div class="team-card group">
+                    <div class="team-card-inner">
+                        <div class="team-avatar">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="w-16 h-16 text-neutral-500">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-white font-semibold text-lg mt-4">Team Member</h3>
+                        <p class="text-neutral-400 text-sm mt-1">Developer</p>
+                    </div>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div class="team-card group">
+                    <div class="team-card-inner">
+                        <div class="team-avatar">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="w-16 h-16 text-neutral-500">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-white font-semibold text-lg mt-4">Team Member</h3>
+                        <p class="text-neutral-400 text-sm mt-1">Designer</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -199,7 +251,7 @@
                 <div
                     class="w-[125px] h-[165px] flex bg-[#08090A] rounded-[8px] hover:scale-105 glowhtml duration-300 transition-all ease-in-out cursor-pointer border-[1.5px] border-[#E34F26]">
                     <div class="flex mx-auto flex-col pt-5">
-                        <img src="images/html.webp" class="object-contain h-[88px] mx-auto">
+                        <img src="images/html.webp" alt="HTML logo" class="object-contain h-[88px] mx-auto">
                         <p class="text-white font-semibold mx-auto text-xl">HTML</p>
                     </div>
                 </div>
@@ -208,7 +260,7 @@
                 <div
                     class="w-[125px] h-[165px] flex bg-[#08090A] rounded-[8px] hover:scale-105 glowcss duration-300 transition-all ease-in-out cursor-pointer border-[1.5px] border-[#1471B6]">
                     <div class="flex mx-auto flex-col pt-5">
-                        <img src="images/css.webp" class="object-contain h-[88px] mx-auto">
+                        <img src="images/css.webp" alt="CSS logo" class="object-contain h-[88px] mx-auto">
                         <p class="text-white font-semibold mx-auto text-xl">CSS</p>
                     </div>
                 </div>
@@ -217,7 +269,7 @@
                 <div
                     class="w-[125px] h-[165px] flex bg-[#08090A] rounded-[8px] hover:scale-105 glowjs duration-300 transition-all ease-in-out cursor-pointer border-[1.5px] border-[#F0DB4F]">
                     <div class="flex mx-auto flex-col pt-5">
-                        <img src="images/js.webp" class="object-contain h-[88px] mx-auto">
+                        <img src="images/js.webp" alt="JavaScript logo" class="object-contain h-[88px] mx-auto">
                         <p class="text-white font-semibold mx-auto text-xl pt-2">JavaScript</p>
                     </div>
                 </div>
@@ -226,7 +278,7 @@
                 <div
                     class="w-[125px] h-[165px] flex bg-[#08090A] rounded-[8px] hover:scale-105 glowtw duration-300 transition-all ease-in-out cursor-pointer border-[1.5px] border-[#38BDF8]">
                     <div class="flex mx-auto flex-col pt-5">
-                        <img src="images/c++.webp" class="object-contain h-[88px] mx-auto">
+                        <img src="images/c++.webp" alt="C++ logo" class="object-contain h-[88px] mx-auto">
                         <p class="text-white font-semibold mx-auto text-xl pt-2">C++</p>
                     </div>
                 </div>
@@ -235,7 +287,7 @@
                 <div
                     class="w-[125px] h-[165px] flex bg-[#08090A] rounded-[8px] hover:scale-105 glowreact duration-300 transition-all ease-in-out cursor-pointer border-[1.5px] border-[#61DAFB]">
                     <div class="flex mx-auto flex-col pt-5">
-                        <img src="images/C.webp" class="object-contain h-[88px] mx-auto">
+                        <img src="images/C.webp" alt="C logo" class="object-contain h-[88px] mx-auto">
                         <p class="text-white font-semibold mx-auto text-xl pt-2">C</p>
                     </div>
                 </div>
@@ -244,7 +296,7 @@
                 <div
                     class="w-[125px] h-[165px] flex bg-[#08090A] rounded-[8px] hover:scale-105 glownext duration-300 transition-all ease-in-out cursor-pointer border-[1.5px] border-[#FFFFFF]">
                     <div class="flex mx-auto flex-col pt-5">
-                        <img src="images/python.webp" class="object-contain h-[88px] mx-auto">
+                        <img src="images/python.webp" alt="Python logo" class="object-contain h-[88px] mx-auto">
                         <p class="text-white font-semibold mx-auto text-xl pt-2">Python</p>
                     </div>
                 </div>
@@ -253,7 +305,7 @@
                 <div
                     class="w-[125px] h-[165px] flex bg-[#08090A] rounded-[8px] hover:scale-105 glowvercel duration-300 transition-all ease-in-out cursor-pointer border-[1.5px] border-[#FFFFFF]">
                     <div class="flex mx-auto flex-col pt-5">
-                        <img src="images/linux.webp" class="object-contain h-[88px] mx-auto">
+                        <img src="images/linux.webp" alt="Linux logo" class="object-contain h-[88px] mx-auto">
                         <p class="text-white font-semibold mx-auto text-xl pt-2">Linux</p>
                     </div>
                 </div>
@@ -262,7 +314,7 @@
                 <div
                     class="w-[125px] h-[165px] flex bg-[#08090A] rounded-[8px] hover:scale-105 glowfigma duration-300 transition-all ease-in-out cursor-pointer border-[1.5px] border-[#768CFF]">
                     <div class="flex mx-auto flex-col pt-5">
-                        <img src="images/cheatengine.webp" class="object-contain h-[88px] mx-auto">
+                        <img src="images/cheatengine.webp" alt="Cheat Engine logo" class="object-contain h-[88px] mx-auto">
                         <p class="text-white font-semibold mx-auto text-xl pt-2">Cheat Engine</p>
                     </div>
                 </div>
@@ -271,7 +323,7 @@
                 <div
                     class="w-[125px] h-[165px] relative bg-[#08090A] rounded-[8px] hover:scale-105 glowps duration-300 transition-all ease-in-out cursor-pointer border-[1.5px] border-[#003E86]">
                     <div class="flex mx-auto flex-col pt-5">
-                        <img src="images/vscode.webp" class="object-contain h-[88px] mx-auto">
+                        <img src="images/vscode.webp" alt="VS Code logo" class="object-contain h-[88px] mx-auto">
                         <p class="text-white font-semibold mx-auto text-xl pt-2">VS Code</p>
                     </div>
                 </div>
@@ -281,7 +333,7 @@
 
             <!-- Spinning Element for Skills -->
             <div class="lg:flex hidden xl:block -mt-[17rem] md:-right-[25rem] md:mt-0 spin absolute">
-                <img src="images/looper.webp" class="w-[45rem] 2xl:w-[55rem] spinning">
+                <img src="images/looper.webp" alt="Decorative spinning graphic" class="w-[45rem] 2xl:w-[55rem] spinning">
             </div>
         </div>
 
@@ -322,7 +374,7 @@
         </div>
 
 
-        <div class="neo-events-section relative flex items-center justify-center py-4 px-4 mt-[25rem] md:mt-[8rem]">
+        <div id="events" class="neo-events-section relative flex items-center justify-center py-4 px-4 mt-[25rem] md:mt-[8rem]">
 
             <div class="absolute inset-0 z-0">
                 <div class="neo-bg-gradient"></div>
@@ -522,67 +574,20 @@
 
                         <p class="text-neutral-200 text-base mb-4">Unlock the power of your dreams</p>
 
-                        <div class="sm:text-xl md:text-3xl lg:text-5xl font-bold text-center text-3xl">
-                            <div class="inline">
-                                <div class="inline-block">
-                                    <span class="dark:text-white text-black opacity-0 hidden">L</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">e</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">t</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">s</span>
-                                </div>
-                                <div class="inline-block">
-                                    <span class="dark:text-white text-black opacity-0 hidden">l</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">a</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">u</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">n</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">c</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">h</span>
-                                </div>
-                                <div class="inline-block">
-                                    <span class="dark:text-white text-black opacity-0 hidden">y</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">o</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">u</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">r</span>
-                                </div>
-                                <div class="inline-block">
-                                    <span class="dark:text-white text-black opacity-0 hidden">n</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">e</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">x</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">t</span>
-                                </div>
-                                <div class="inline-block">
-                                    <span class="dark:text-white text-black opacity-0 hidden">p</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">r</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">o</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">j</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">e</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">c</span>
-                                    <span class="dark:text-white text-black opacity-0 hidden">t</span>
-                                </div>
-                                <div class="inline-block">
-                                    <span class="opacity-0 hidden text-white dark:text-white drop-shadow-glow">t</span>
-                                    <span class="opacity-0 hidden text-white dark:text-white drop-shadow-glow">o</span>
-                                    <span class="opacity-0 hidden text-white dark:text-white drop-shadow-glow">g</span>
-                                    <span class="opacity-0 hidden text-white dark:text-white drop-shadow-glow">e</span>
-                                    <span class="opacity-0 hidden text-white dark:text-white drop-shadow-glow">t</span>
-                                    <span class="opacity-0 hidden text-white dark:text-white drop-shadow-glow">h</span>
-                                    <span class="opacity-0 hidden text-white dark:text-white drop-shadow-glow">e</span>
-                                    <span class="opacity-0 hidden text-white dark:text-white drop-shadow-glow">r</span>
-                                    <span class="opacity-0 hidden text-white dark:text-white drop-shadow-glow">.</span>
-                                </div>
-                            </div>
-                        </div>
+                        <h1 class="text-3xl sm:text-xl md:text-3xl lg:text-5xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">
+                            Lets launch your next project <span class="text-white drop-shadow-glow">together.</span>
+                        </h1>
 
                         <div class="flex md:flex-row md:space-y-0 space-x-2 md:space-x-4 mt-10">
                             <a href="https://discord.gg/DjJVKeD9gh" target="_blank">
                                 <div class="w-12 h-12 flex items-center justify-center">
-                                    <img src="images/discord.webp"
+                                    <img src="images/discord.webp" alt="Discord"
                                         class="max-w-full max-h-full object-contain hover:drop-shadow-glow hover:scale-105 duration-300 transition-all">
                                 </div>
                             </a>
                             <a href="https://www.instagram.com/theneo_org/" target="_blank">
                                 <div class="w-12 h-12 flex items-center justify-center">
-                                    <img src="images/insta_logo.webp"
+                                    <img src="images/insta_logo.webp" alt="Instagram"
                                         class="max-w-full max-h-full object-contain hover:drop-shadow-glow hover:scale-105 duration-300 transition-all">
                                 </div>
                             </a>
@@ -644,28 +649,28 @@
                             <nav class="ml-8">
                                 <ul class="flex">
                                     <li class="mr-4">
-                                        <a>
+                                        <a href="#home">
                                             <p
                                                 class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">
                                                 Home</p>
                                         </a>
                                     </li>
                                     <li class="mr-4">
-                                        <a>
+                                        <a href="#skills">
                                             <p
                                                 class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">
                                                 Skills</p>
                                         </a>
                                     </li>
                                     <li class="mr-4">
-                                        <a>
+                                        <a href="#experience">
                                             <p
                                                 class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">
                                                 Impact</p>
                                         </a>
                                     </li>
                                     <li class="mr-4">
-                                        <a>
+                                        <a href="#events">
                                             <p
                                                 class="hover:text-white cursor-pointer hover:drop-shadow-glow duration-300 transition-all ease">
                                                 Upcoming Events</p>
@@ -682,7 +687,7 @@
                             </nav>
                         </div>
                         <div class="md:order-2 mt-4 md:mt-0">
-                            <a>
+                            <a href="#home">
                                 <button
                                     class="backdrop-blur-[1.25px] hover:border-neutral-400 duration-300 transition-all ease border text-sm font-medium relative border-white/[0.2] text-white px-4 py-2 rounded-full">
                                     <span>Back to Top</span>
