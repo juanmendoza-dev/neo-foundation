@@ -3,6 +3,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Prevent background flash on initial load — skip color shifts until first scroll
+let hasScrolled = false;
+window.addEventListener('scroll', () => { hasScrolled = true; }, { once: true });
+
 export function initScroll(lenis) {
   // Sync Lenis with GSAP ScrollTrigger
   lenis.on('scroll', ScrollTrigger.update);
@@ -60,6 +64,7 @@ function initBackgroundShifts() {
       start: 'top 80%',
       end: 'top 20%',
       onUpdate: (self) => {
+        if (!hasScrolled) return;
         const startColor = [10, 10, 15]; // #0a0a0f
         const endColor = hexToRgb(bg);
         const r = Math.round(startColor[0] + (endColor[0] - startColor[0]) * self.progress);
@@ -75,8 +80,9 @@ function initBackgroundShifts() {
       start: 'bottom 80%',
       end: 'bottom 20%',
       onUpdate: (self) => {
-        const endColor = hexToRgb(bg);
+        if (!hasScrolled) return;
         const startColor = [10, 10, 15];
+        const endColor = hexToRgb(bg);
         const r = Math.round(endColor[0] + (startColor[0] - endColor[0]) * self.progress);
         const g = Math.round(endColor[1] + (startColor[1] - endColor[1]) * self.progress);
         const b = Math.round(endColor[2] + (startColor[2] - endColor[2]) * self.progress);
@@ -287,6 +293,7 @@ function initChapter2Intro() {
       start: 'top 80%',
       end: 'top 20%',
       onUpdate: (self) => {
+        if (!hasScrolled) return;
         const startColor = [10, 10, 15];
         const endColor = hexToRgb(bg);
         const r = Math.round(startColor[0] + (endColor[0] - startColor[0]) * self.progress);

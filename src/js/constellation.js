@@ -50,6 +50,12 @@ const DEFAULT_LINES = [
 ];
 
 export function initConstellation() {
+  // Defer to next frame to ensure layout is fully computed
+  // (adding more sections below can delay layout of offscreen panels)
+  requestAnimationFrame(() => _buildConstellation());
+}
+
+function _buildConstellation() {
   const container = document.querySelector('.constellation-map');
   const svgCanvas = document.querySelector('.constellation-svg');
   const nodesContainer = document.querySelector('.constellation-nodes');
@@ -57,6 +63,12 @@ export function initConstellation() {
 
   const mapWidth = container.scrollWidth;
   const mapHeight = container.clientHeight;
+
+  // Guard: if dimensions aren't ready yet, retry next frame
+  if (mapWidth === 0 || mapHeight === 0) {
+    requestAnimationFrame(() => _buildConstellation());
+    return;
+  }
 
   // ── Build SVG defs for glow filters ──
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');

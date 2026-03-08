@@ -96,11 +96,12 @@ export function initImpact() {
             // Slam to final number
             numberEl.textContent = target.toLocaleString();
 
-            // Screen shake on the last stat
+            // Screen shake on the last stat — apply to chapter only,
+            // not body (transform on body breaks position:fixed canvas)
             if (i === stats.length - 1) {
-              document.body.classList.add('screen-shake');
+              chapter.classList.add('screen-shake');
               setTimeout(() => {
-                document.body.classList.remove('screen-shake');
+                chapter.classList.remove('screen-shake');
               }, 300);
             }
           },
