@@ -1297,6 +1297,45 @@ function initFixedNavScroll() {
     }, 100), { passive: true });
 }
 
+// Active nav indicator based on scroll position
+function initActiveNavIndicator() {
+    const sections = document.querySelectorAll('#home, #team, #skills, #experience, #events, #contact');
+    const navLinks = document.querySelectorAll('nav a[href^="#"], .fixed.top-10 a[href^="#"]');
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                navLinks.forEach(link => {
+                    link.classList.remove('nav-active');
+                    const href = link.getAttribute('href');
+                    if (href === '#' + id) {
+                        link.classList.add('nav-active');
+                    }
+                });
+            }
+        });
+    }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+
+    sections.forEach(section => sectionObserver.observe(section));
+}
+
+// Scroll reveal animations
+function initScrollReveal() {
+    const revealElements = document.querySelectorAll('.reveal');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: '0px', threshold: 0.1 });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+}
+
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize based on device capabilities
@@ -1308,6 +1347,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initPerformanceToggle();
     initMobileMenu();
     initFixedNavScroll();
+    initActiveNavIndicator();
+    initScrollReveal();
 
     // delay fat animations for better initial load
     setTimeout(() => {
