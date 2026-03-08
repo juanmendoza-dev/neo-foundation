@@ -3544,3 +3544,67 @@ button, a, input, textarea, select, [role="button"], .cursor-pointer {
   50% { transform: translate(10px, 10px); }
 }
 
+/* Mobile Menu Overlay */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mobile-menu-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-menu-link {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease, color 0.2s ease;
+}
+
+.mobile-menu-overlay.open .mobile-menu-link {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobile-menu-overlay.open .mobile-menu-link:nth-child(1) { transition-delay: 0.05s; }
+.mobile-menu-overlay.open .mobile-menu-link:nth-child(2) { transition-delay: 0.1s; }
+.mobile-menu-overlay.open .mobile-menu-link:nth-child(3) { transition-delay: 0.15s; }
+.mobile-menu-overlay.open .mobile-menu-link:nth-child(4) { transition-delay: 0.2s; }
+.mobile-menu-overlay.open .mobile-menu-link:nth-child(5) { transition-delay: 0.25s; }
+.mobile-menu-overlay.open .mobile-menu-link:nth-child(6) { transition-delay: 0.3s; }
+
+.mobile-menu-link:hover,
+.mobile-menu-link:focus {
+  color: #a3a3a3;
+}
+
+/* Hamburger animation (bars to X) */
+#hamburger-btn.active .hamburger-bar:nth-child(1) {
+  transform: translateY(4px) rotate(45deg);
+}
+
+#hamburger-btn.active .hamburger-bar:nth-child(2) {
+  opacity: 0;
+}
+
+#hamburger-btn.active .hamburger-bar:nth-child(3) {
+  width: 1.5rem;
+  margin-left: 0;
+  align-self: center;
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+.gap-1\.5 {
+  gap: 0.375rem;
+}
+
+.h-0\.5 {
+  height: 0.125rem;
+}
+

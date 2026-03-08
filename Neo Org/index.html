@@ -61,18 +61,42 @@
                 </div>
                 <div class="flex items-center">
                     <button
-                        class="backdrop-blur-[1.25px] hover:border-neutral-400 duration-300 transition-all ease border text-sm font-medium relative border-white/[0.2] text-white px-4 py-2 rounded-full">
+                        class="hidden md:block backdrop-blur-[1.25px] hover:border-neutral-400 duration-300 transition-all ease border text-sm font-medium relative border-white/[0.2] text-white px-4 py-2 rounded-full">
                         <a href="#contact">Contact</a>
                     </button>
-                    <div class="performance-toggle-container">
+                    <div class="performance-toggle-container hidden md:flex">
                         <div class="performance-toggle" id="performance-toggle">
                             <div class="performance-toggle-slider"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="perf-icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
                         </div>
                         <span class="performance-toggle-label">Performance Mode</span>
                     </div>
+                    <!-- Hamburger Menu Button (mobile only) -->
+                    <button id="hamburger-btn" class="md:hidden relative w-8 h-8 flex flex-col items-center justify-center gap-1.5" aria-label="Open navigation menu">
+                        <span class="hamburger-bar block w-6 h-0.5 bg-white rounded transition-all duration-300"></span>
+                        <span class="hamburger-bar block w-6 h-0.5 bg-white rounded transition-all duration-300"></span>
+                        <span class="hamburger-bar block w-4 h-0.5 bg-white rounded transition-all duration-300 self-start ml-1"></span>
+                    </button>
                 </div>
             </div>
         </nav>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="mobile-menu-overlay">
+            <nav class="flex flex-col items-center justify-center h-full gap-8">
+                <a href="#home" class="mobile-menu-link text-3xl text-white font-semibold">Home</a>
+                <a href="#skills" class="mobile-menu-link text-3xl text-white font-semibold">Skills</a>
+                <a href="#experience" class="mobile-menu-link text-3xl text-white font-semibold">Impact</a>
+                <a href="#events" class="mobile-menu-link text-3xl text-white font-semibold">Events</a>
+                <a href="#contact" class="mobile-menu-link text-3xl text-white font-semibold">Contact</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSefvsXkC96gvDtfGqW2tng_unjjMV9jDhbUaewJF03SrIAm_Q/viewform?usp=header" target="_blank" class="mobile-menu-link text-3xl text-white font-semibold">Bug Bounty</a>
+                <div class="performance-toggle-container mt-4">
+                    <div class="performance-toggle" id="performance-toggle-mobile">
+                        <div class="performance-toggle-slider"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="perf-icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                    </div>
+                    <span class="performance-toggle-label">Performance Mode</span>
+                </div>
+            </nav>
+        </div>
 
         <!-- Fixed Navigation Bar -->
         <div class="md:flex max-w-fit md:visible hidden fixed top-10 inset-x-0 mx-auto border border-white/[0.2] rounded-full bg-[#767676]/20 backdrop-blur shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] z-[5000] pr-2 pl-8 py-2 items-center justify-center space-x-4"

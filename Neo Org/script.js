@@ -1105,7 +1105,7 @@ function createStarExplosion(element) {
 function togglePerformanceMode() {
     performanceModeActive = !performanceModeActive;
 
-    const toggles = document.querySelectorAll('#performance-toggle, #performance-toggle-fixed');
+    const toggles = document.querySelectorAll('#performance-toggle, #performance-toggle-fixed, #performance-toggle-mobile');
     const containers = document.querySelectorAll('.performance-toggle-container');
     const indicator = document.getElementById('performance-indicator');
 
@@ -1201,7 +1201,7 @@ function togglePerformanceMode() {
 }
 
 function initPerformanceToggle() {
-    const toggles = document.querySelectorAll('#performance-toggle, #performance-toggle-fixed');
+    const toggles = document.querySelectorAll('#performance-toggle, #performance-toggle-fixed, #performance-toggle-mobile');
 
     toggles.forEach(toggle => {
         toggle.addEventListener('click', (e) => {
@@ -1220,6 +1220,39 @@ function initPerformanceToggle() {
         toggle.addEventListener('mouseleave', () => {
             toggle.style.transform = 'scale(1)';
         });
+    });
+}
+
+// Mobile menu
+function initMobileMenu() {
+    const hamburger = document.getElementById('hamburger-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (!hamburger || !mobileMenu) return;
+
+    function toggleMenu() {
+        hamburger.classList.toggle('active');
+        mobileMenu.classList.toggle('open');
+        document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+    }
+
+    function closeMenu() {
+        hamburger.classList.remove('active');
+        mobileMenu.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    hamburger.addEventListener('click', toggleMenu);
+
+    // Close on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+            closeMenu();
+        }
     });
 }
 
@@ -1248,6 +1281,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initSmoothScrolling();
     initPerformanceToggle();
+    initMobileMenu();
     initFixedNavScroll();
 
     // delay fat animations for better initial load
