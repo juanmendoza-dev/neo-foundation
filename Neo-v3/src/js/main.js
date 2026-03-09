@@ -24,7 +24,7 @@ const lenis = new Lenis({
 const canvas = document.getElementById('starfield');
 initStarfield(canvas);
 initCursor();
-initHero();
+initHero(canvas);
 initScroll(lenis);
 
 // Constellation builds asynchronously (deferred to next frame).

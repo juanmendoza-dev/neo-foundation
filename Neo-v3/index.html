@@ -37,13 +37,34 @@
 
   <!-- Hero Section -->
   <section id="hero" class="hero">
+    <!-- Logo sphere (starts centered, moves to wordmark) -->
+    <div class="hero-sphere-wrap">
+      <img class="hero-sphere" src="/images/NeoLogo-removebg-preview.png" alt="Neo Foundation Logo" />
+    </div>
+
+    <!-- Shockwave pulse (fires once) -->
+    <div class="hero-shockwave"></div>
+
+    <!-- Wordmark + tagline (appear after sphere settles) -->
     <div class="hero-content">
-      <h1 class="hero-logo" data-splitting>NEO FOUNDATION</h1>
+      <div class="hero-wordmark-row">
+        <div class="hero-sphere-final">
+          <img src="/images/NeoLogo-removebg-preview.png" alt="" />
+        </div>
+        <h1 class="hero-wordmark">Neo Foundation</h1>
+      </div>
       <p class="hero-tagline">
         <span class="tagline-text"></span>
         <span class="tagline-cursor">_</span>
       </p>
+      <div class="hero-scroll-hint">
+        <span class="hero-scroll-label">SCROLL TO EXPLORE</span>
+        <div class="hero-scroll-chevron">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
     </div>
+
     <div class="shooting-star"></div>
   </section>
 
