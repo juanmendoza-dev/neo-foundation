@@ -24,34 +24,38 @@ const ICON_FILES = {
 };
 
 // ── Skills in exact display order ──
-// Scratch = beginner gateway (no connections)
-// VS Code = hub (connects to all others)
-// C++ = standalone (only connects via VS Code)
+// VS Code = hub, connects to everything
+// HTML/CSS/JS = web trio, connect to each other only
+// Scratch = beginner gateway, no connections
+// C++ = standalone, no connections
 const SKILLS = [
-  { id: 'scratch', label: 'Scratch',    x: 8,  y: 50, related: [],                                    gateway: true },
-  { id: 'vscode',  label: 'VS Code',    x: 38, y: 65, related: ['html', 'css', 'js', 'cpp'] },
-  { id: 'html',    label: 'HTML',       x: 30, y: 25, related: ['css', 'js', 'vscode'] },
-  { id: 'css',     label: 'CSS',        x: 50, y: 18, related: ['html', 'js', 'vscode'] },
-  { id: 'js',      label: 'JavaScript', x: 62, y: 42, related: ['html', 'css', 'vscode'] },
-  { id: 'cpp',     label: 'C++',        x: 82, y: 35, related: ['vscode'] },
+  { id: 'scratch', label: 'Scratch',    x: 8,  y: 50, related: [],                             gateway: true },
+  { id: 'vscode',  label: 'VS Code',    x: 38, y: 65, related: ['scratch', 'html', 'css', 'js', 'cpp'] },
+  { id: 'html',    label: 'HTML',       x: 30, y: 25, related: ['css', 'js'] },
+  { id: 'css',     label: 'CSS',        x: 50, y: 18, related: ['html', 'js'] },
+  { id: 'js',      label: 'JavaScript', x: 62, y: 42, related: ['html', 'css'] },
+  { id: 'cpp',     label: 'C++',        x: 82, y: 35, related: [] },
 ];
 
-// ── Default constellation lines (always visible at low opacity) ──
+// ── Constellation lines (always visible at low opacity) ──
 const DEFAULT_LINES = [
   // Web trio
   ['html', 'css'],
   ['css', 'js'],
   ['html', 'js'],
   // VS Code hub connections
+  ['vscode', 'scratch'],
   ['vscode', 'html'],
   ['vscode', 'css'],
   ['vscode', 'js'],
   ['vscode', 'cpp'],
 ];
 
-export function initConstellation() {
-  // Defer to next frame to ensure layout is fully computed
-  // (adding more sections below can delay layout of offscreen panels)
+// Callback for when constellation layout is complete (pin registered)
+let _onReadyCallback = null;
+
+export function initConstellation(onReady) {
+  _onReadyCallback = onReady || null;
   requestAnimationFrame(() => _buildConstellation());
 }
 
@@ -61,11 +65,10 @@ function _buildConstellation() {
   const nodesContainer = document.querySelector('.constellation-nodes');
   if (!container || !svgCanvas || !nodesContainer) return;
 
-  const mapWidth = container.scrollWidth;
-  const mapHeight = container.clientHeight;
+  const rect = container.getBoundingClientRect();
 
   // Guard: if dimensions aren't ready yet, retry next frame
-  if (mapWidth === 0 || mapHeight === 0) {
+  if (rect.width === 0 || rect.height === 0) {
     requestAnimationFrame(() => _buildConstellation());
     return;
   }
@@ -91,54 +94,7 @@ function _buildConstellation() {
   `;
   svgCanvas.appendChild(defs);
 
-  // ── Create default constellation lines ──
-  const lineElements = {};
-  const travelDots = {};
-
-  DEFAULT_LINES.forEach(([fromId, toId]) => {
-    const from = SKILLS.find((s) => s.id === fromId);
-    const to = SKILLS.find((s) => s.id === toId);
-    const key = [fromId, toId].sort().join('-');
-
-    const x1 = (from.x / 100) * mapWidth;
-    const y1 = (from.y / 100) * mapHeight;
-    const x2 = (to.x / 100) * mapWidth;
-    const y2 = (to.y / 100) * mapHeight;
-
-    // Background line (always visible, faint)
-    const bgLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    bgLine.setAttribute('x1', x1);
-    bgLine.setAttribute('y1', y1);
-    bgLine.setAttribute('x2', x2);
-    bgLine.setAttribute('y2', y2);
-    bgLine.setAttribute('class', 'const-line-bg');
-    svgCanvas.appendChild(bgLine);
-
-    // Active line (shown on hover with draw animation)
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', x1);
-    line.setAttribute('y1', y1);
-    line.setAttribute('x2', x2);
-    line.setAttribute('y2', y2);
-    line.setAttribute('class', 'const-line-active');
-    const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
-    line.style.strokeDasharray = length;
-    line.style.strokeDashoffset = length;
-    svgCanvas.appendChild(line);
-
-    lineElements[key] = { line, bgLine, length, x1, y1, x2, y2 };
-
-    // Traveling light dot
-    const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    dot.setAttribute('r', '3');
-    dot.setAttribute('class', 'const-travel-dot');
-    dot.setAttribute('cx', x1);
-    dot.setAttribute('cy', y1);
-    svgCanvas.appendChild(dot);
-    travelDots[key] = { dot, x1, y1, x2, y2 };
-  });
-
-  // ── Create skill nodes ──
+  // ── Create skill nodes first (so we can measure their real positions) ──
   const nodeElements = {};
 
   SKILLS.forEach((skill, index) => {
@@ -176,6 +132,94 @@ function _buildConstellation() {
     nodeElements[skill.id] = node;
   });
 
+  // ── Helper: get node center relative to the SVG/container ──
+  function getNodeCenter(skillId) {
+    const node = nodeElements[skillId];
+    const nodeRect = node.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    return {
+      x: nodeRect.left + nodeRect.width / 2 - containerRect.left,
+      y: nodeRect.top + nodeRect.height / 2 - containerRect.top,
+    };
+  }
+
+  // ── Create constellation lines from real DOM positions ──
+  const lineElements = {};
+  const travelDots = {};
+
+  function buildLines() {
+    // Clear existing lines
+    Object.values(lineElements).forEach(({ line, bgLine }) => {
+      line.remove();
+      bgLine.remove();
+    });
+    Object.values(travelDots).forEach(({ dot }) => {
+      dot.remove();
+    });
+    // Reset
+    Object.keys(lineElements).forEach((k) => delete lineElements[k]);
+    Object.keys(travelDots).forEach((k) => delete travelDots[k]);
+
+    DEFAULT_LINES.forEach(([fromId, toId]) => {
+      const key = [fromId, toId].sort().join('-');
+      const from = getNodeCenter(fromId);
+      const to = getNodeCenter(toId);
+
+      // Background line (always visible, faint)
+      const bgLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      bgLine.setAttribute('x1', from.x);
+      bgLine.setAttribute('y1', from.y);
+      bgLine.setAttribute('x2', to.x);
+      bgLine.setAttribute('y2', to.y);
+      bgLine.setAttribute('class', 'const-line-bg');
+      svgCanvas.appendChild(bgLine);
+
+      // Active line (shown on hover with draw animation)
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', from.x);
+      line.setAttribute('y1', from.y);
+      line.setAttribute('x2', to.x);
+      line.setAttribute('y2', to.y);
+      line.setAttribute('class', 'const-line-active');
+      const length = Math.sqrt((to.x - from.x) ** 2 + (to.y - from.y) ** 2);
+      line.style.strokeDasharray = length;
+      line.style.strokeDashoffset = length;
+      svgCanvas.appendChild(line);
+
+      lineElements[key] = { line, bgLine, length };
+
+      // Traveling light dot
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      dot.setAttribute('r', '3');
+      dot.setAttribute('class', 'const-travel-dot');
+      dot.setAttribute('cx', from.x);
+      dot.setAttribute('cy', from.y);
+      svgCanvas.appendChild(dot);
+      travelDots[key] = { dot };
+    });
+
+    // Restart idle line flicker for new elements
+    Object.values(lineElements).forEach(({ bgLine }) => {
+      gsap.to(bgLine, {
+        opacity: 0.05 + Math.random() * 0.08,
+        duration: 1.5 + Math.random() * 2,
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true,
+        delay: Math.random() * 3,
+      });
+    });
+  }
+
+  // Build lines after nodes are in the DOM
+  buildLines();
+
+  // ── ResizeObserver — recalculate line positions on layout shift ──
+  const resizeObserver = new ResizeObserver(() => {
+    buildLines();
+  });
+  resizeObserver.observe(container);
+
   // ── Idle animations ──
   Object.values(nodeElements).forEach((node) => {
     const aura = node.querySelector('.const-node-aura');
@@ -192,17 +236,6 @@ function _buildConstellation() {
     gsap.to(node, {
       y: -3 + Math.random() * 6,
       duration: 3 + Math.random() * 2,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true,
-      delay: Math.random() * 3,
-    });
-  });
-
-  Object.values(lineElements).forEach(({ bgLine }) => {
-    gsap.to(bgLine, {
-      opacity: 0.05 + Math.random() * 0.08,
-      duration: 1.5 + Math.random() * 2,
       ease: 'sine.inOut',
       repeat: -1,
       yoyo: true,
@@ -289,16 +322,12 @@ function _buildConstellation() {
 
         const td = travelDots[key];
         if (td) {
-          const fromSkill = SKILLS.find((s) => s.id === skillId);
-          const toSkill = SKILLS.find((s) => s.id === relId);
-          const startX = (fromSkill.x / 100) * mapWidth;
-          const startY = (fromSkill.y / 100) * mapHeight;
-          const endX = (toSkill.x / 100) * mapWidth;
-          const endY = (toSkill.y / 100) * mapHeight;
+          const fromPos = getNodeCenter(skillId);
+          const toPos = getNodeCenter(relId);
 
-          gsap.set(td.dot, { attr: { cx: startX, cy: startY }, opacity: 0 });
+          gsap.set(td.dot, { attr: { cx: fromPos.x, cy: fromPos.y }, opacity: 0 });
           gsap.to(td.dot, {
-            attr: { cx: endX, cy: endY },
+            attr: { cx: toPos.x, cy: toPos.y },
             opacity: 1,
             duration: 0.6,
             delay: i * 0.1,
@@ -418,6 +447,9 @@ function _buildConstellation() {
             const td = travelDots[key];
             if (!el) return;
 
+            const from = getNodeCenter(fromId);
+            const to = getNodeCenter(toId);
+
             gsap.to(el.bgLine, {
               opacity: 0.12,
               duration: 0.4,
@@ -432,9 +464,9 @@ function _buildConstellation() {
             });
 
             if (td) {
-              gsap.set(td.dot, { attr: { cx: el.x1, cy: el.y1 }, opacity: 0 });
+              gsap.set(td.dot, { attr: { cx: from.x, cy: from.y }, opacity: 0 });
               gsap.to(td.dot, {
-                attr: { cx: el.x2, cy: el.y2 },
+                attr: { cx: to.x, cy: to.y },
                 opacity: 0.8,
                 duration: 0.5,
                 delay: 0.8 + i * 0.08,
@@ -472,6 +504,7 @@ function _buildConstellation() {
     });
   }
 
-  // Refresh after pin is registered so downstream triggers recalculate positions
+  // Pin is now registered — refresh and notify main.js
   ScrollTrigger.refresh();
+  if (_onReadyCallback) _onReadyCallback();
 }

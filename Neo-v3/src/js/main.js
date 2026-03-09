@@ -24,10 +24,13 @@ initStarfield(canvas);
 initCursor();
 initHero();
 initScroll(lenis);
-initConstellation();
-initImpact();
-initCrew();
 
-// Refresh ScrollTrigger after all modules have registered their triggers,
-// so trigger positions account for pinned sections and dynamic content
-ScrollTrigger.refresh();
+// Constellation builds asynchronously (deferred to next frame).
+// Impact and crew ScrollTriggers must init AFTER the Ch2 pin is registered,
+// otherwise their trigger positions are calculated without the pin's
+// added scroll height — causing them to fire immediately on load.
+initConstellation(() => {
+  initImpact();
+  initCrew();
+  ScrollTrigger.refresh();
+});

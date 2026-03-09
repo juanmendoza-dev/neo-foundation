@@ -15,11 +15,22 @@ export function initImpact() {
   const title = chapter.querySelector('.ch3-title');
   const note = chapter.querySelector('.hud-note');
 
+  // ── Lock initial state so nothing is visible before scroll ──
+  gsap.set(radar, { opacity: 0 });
+  gsap.set(sweep, { opacity: 0, rotation: 0 });
+  gsap.set(ping, { opacity: 0, scale: 0 });
+  gsap.set(stats, { opacity: 0, scale: 0.8 });
+  gsap.set(label, { opacity: 0 });
+  gsap.set(title, { opacity: 0, y: 30, filter: 'blur(6px)' });
+  gsap.set(note, { opacity: 0 });
+
   // ── Master timeline triggered on scroll ──
+  // start: 'top 70%' = fires when section top reaches 70% of viewport
+  // (i.e. ~30% of the section is visible)
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: chapter,
-      start: 'top 60%',
+      start: 'top 70%',
       once: true,
     },
   });
