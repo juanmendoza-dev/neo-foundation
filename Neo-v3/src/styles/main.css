@@ -8,7 +8,7 @@
      Supernova gold:   #F59E0B
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;600;700;900&family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
 
 :root {
   --black: #0a0a0f;
@@ -146,32 +146,88 @@ body {
   overflow: hidden;
 }
 
+/* Logo sphere — starts centered, animates to final position */
+.hero-sphere-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.hero-sphere {
+  width: 280px;
+  height: 280px;
+  object-fit: contain;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+@keyframes sphere-rotate {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Shockwave ring */
+.hero-shockwave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  border: 2px solid rgba(6, 182, 212, 0.6);
+  box-shadow: 0 0 40px rgba(6, 182, 212, 0.3),
+              inset 0 0 40px rgba(6, 182, 212, 0.1);
+  opacity: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Wordmark + tagline container */
 .hero-content {
   position: relative;
   z-index: 2;
+  opacity: 0;
 }
 
-.hero-logo {
-  font-family: 'Space Mono', monospace;
+.hero-wordmark-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.hero-sphere-final {
+  width: 64px;
+  height: 64px;
+  opacity: 0;
+}
+
+.hero-sphere-final img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: sphere-rotate 20s linear infinite;
+  filter: drop-shadow(0 0 15px rgba(6, 182, 212, 0.4));
+}
+
+.hero-wordmark {
+  font-family: 'Orbitron', sans-serif;
   font-size: clamp(2.5rem, 6vw, 5rem);
   font-weight: 700;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--white);
   opacity: 0;
-}
-
-/* Splitting.js generated chars */
-.hero-logo .char {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(20px) scale(0.5);
-  filter: blur(4px);
-  text-shadow: 0 0 20px var(--teal), 0 0 40px var(--purple);
+  transform: translateY(20px);
+  text-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
 }
 
 .hero-tagline {
-  font-family: 'Space Mono', monospace;
+  font-family: 'Exo 2', sans-serif;
   font-size: clamp(0.9rem, 1.5vw, 1.2rem);
   color: var(--teal);
   margin-top: 1.5rem;
@@ -186,6 +242,34 @@ body {
 
 @keyframes blink {
   50% { opacity: 0; }
+}
+
+/* Scroll indicator */
+.hero-scroll-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 3rem;
+  opacity: 0;
+}
+
+.hero-scroll-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  color: rgba(226, 232, 240, 0.4);
+  text-transform: uppercase;
+}
+
+.hero-scroll-chevron {
+  color: rgba(6, 182, 212, 0.5);
+  animation: chevron-bob 2s ease-in-out infinite;
+}
+
+@keyframes chevron-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(6px); }
 }
 
 /* ── Shooting Star ───────────────────────── */

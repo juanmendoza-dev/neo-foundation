@@ -1,70 +1,154 @@
 import gsap from 'gsap';
-import Splitting from 'splitting';
-import 'splitting/dist/splitting.css';
+
+const LOGO_SRC = '/images/neoLogo-removebg-preview.png';
 
 export function initHero() {
-  // ── Split logo text into individual chars ──
-  const logoEl = document.querySelector('.hero-logo');
-  Splitting({ target: logoEl });
-
-  const chars = logoEl.querySelectorAll('.char');
+  const sphereWrap = document.querySelector('.hero-sphere-wrap');
+  const sphere = document.querySelector('.hero-sphere');
+  const shockwave = document.querySelector('.hero-shockwave');
+  const content = document.querySelector('.hero-content');
+  const sphereFinal = document.querySelector('.hero-sphere-final');
+  const wordmark = document.querySelector('.hero-wordmark');
   const taglineText = document.querySelector('.tagline-text');
-  const shootingStar = document.querySelector('.shooting-star');
+  const scrollHint = document.querySelector('.hero-scroll-hint');
 
-  // Show the logo container
-  gsap.set(logoEl, { opacity: 1 });
+  // ── Preload logo before starting any animation ──
+  const preloader = new Image();
+  preloader.src = LOGO_SRC;
 
-  // ── Master timeline ────────────────────────
-  const tl = gsap.timeline({ delay: 0.5 });
+  let started = false;
+  function startOnce() {
+    if (started) return;
+    started = true;
+    buildTimeline();
+  }
 
-  // 1. Stardust assembly — letters appear from scattered/blurred state
-  tl.to(chars, {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    filter: 'blur(0px)',
-    duration: 1.2,
-    stagger: {
-      each: 0.05,
-      from: 'random',
-    },
-    ease: 'power3.out',
-  });
+  preloader.onload = startOnce;
+  if (preloader.complete) startOnce();
 
-  // 2. Brief glow pulse on assembled logo
-  tl.to(chars, {
-    textShadow: '0 0 30px #06B6D4, 0 0 60px #6B21A8, 0 0 90px #06B6D4',
-    duration: 0.4,
-    ease: 'power2.in',
-  }, '-=0.3');
+  function buildTimeline() {
+    // ── Set initial states ──────────────────────
+    gsap.set(sphere, { opacity: 0, scale: 0 });
+    gsap.set(shockwave, { opacity: 0, scale: 0 });
+    gsap.set(content, { opacity: 0 });
+    gsap.set(wordmark, { opacity: 0, y: 20 });
+    gsap.set(scrollHint, { opacity: 0 });
+    gsap.set(sphereFinal, { opacity: 0 });
 
-  tl.to(chars, {
-    textShadow: '0 0 8px rgba(6,182,212,0.3), 0 0 20px rgba(107,33,168,0.15)',
-    duration: 0.8,
-    ease: 'power2.out',
-  });
+    // ── Master timeline — exact absolute positions ──
+    const tl = gsap.timeline();
 
-  // 3. Shooting star streaks across
-  tl.to(shootingStar, {
-    opacity: 1,
-    left: '110%',
-    duration: 1,
-    ease: 'power2.in',
-  }, '-=0.6');
+    // Step 1 — Starfield fades in (0.0s – 0.5s)
+    // Handled by starfield.js auto-reveal — no canvas manipulation here
 
-  tl.set(shootingStar, { opacity: 0 });
+    // Step 2 — Logo sphere appears center screen (0.5s – 1.5s)
+    tl.to(sphere, {
+      opacity: 1,
+      scale: 1,
+      rotation: 360,
+      duration: 1,
+      ease: 'power3.out',
+    }, 0.5);
 
-  // 4. Tagline types out like a terminal
-  const tagline = 'EMPOWERING THE NEXT GENERATION OF BUILDERS';
+    // Logo glow corona — ramp up during appearance
+    tl.to(sphere, {
+      filter: 'drop-shadow(0 0 20px #06B6D4) drop-shadow(0 0 40px rgba(6,182,212,0.67))',
+      duration: 0.8,
+      ease: 'power2.in',
+    }, 0.7);
 
-  tl.add(() => {
-    typewriterEffect(taglineText, tagline);
-  }, '-=0.3');
+    // Step 3 — Shockwave pulse (1.5s – 2.2s)
+    tl.to(shockwave, {
+      opacity: 0.8,
+      scale: 1,
+      duration: 0.15,
+      ease: 'power4.out',
+    }, 1.5);
+
+    tl.to(shockwave, {
+      scale: 3,
+      opacity: 0,
+      duration: 0.55,
+      ease: 'power2.out',
+    }, 1.65);
+
+    // Step 4 — Logo shrinks + moves to final position (2.2s – 3.0s)
+    tl.set(content, { opacity: 1 }, 2.2);
+
+    const getTargetPos = () => {
+      const finalRect = sphereFinal.getBoundingClientRect();
+      const wrapRect = sphereWrap.getBoundingClientRect();
+      return {
+        x: finalRect.left + finalRect.width / 2 - (wrapRect.left + wrapRect.width / 2),
+        y: finalRect.top + finalRect.height / 2 - (wrapRect.top + wrapRect.height / 2),
+      };
+    };
+
+    tl.to(sphere, {
+      width: 64,
+      height: 64,
+      filter: 'drop-shadow(0 0 15px rgba(6,182,212,0.4))',
+      duration: 0.8,
+      ease: 'power3.inOut',
+      onUpdate() {
+        const pos = getTargetPos();
+        gsap.set(sphereWrap, { x: pos.x, y: pos.y });
+      },
+      onComplete() {
+        gsap.set(sphereWrap, { display: 'none' });
+        gsap.set(sphereFinal, { opacity: 1 });
+      },
+    }, 2.2);
+
+    // Step 5 — "Neo Foundation" text fades up (2.8s – 3.4s)
+    tl.to(wordmark, {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+      ease: 'power3.out',
+    }, 2.8);
+
+    // Brief glow pulse on wordmark
+    tl.to(wordmark, {
+      textShadow: '0 0 30px rgba(6,182,212,0.6), 0 0 60px rgba(107,33,168,0.4)',
+      duration: 0.3,
+      ease: 'power2.in',
+    }, 3.0);
+
+    tl.to(wordmark, {
+      textShadow: '0 0 20px rgba(6,182,212,0.2)',
+      duration: 0.5,
+      ease: 'power2.out',
+    }, 3.3);
+
+    // Step 6 — Tagline types out (3.4s – 5.0s)
+    tl.add(() => {
+      typewriterEffect(taglineText, 'EMPOWERING THE NEXT GENERATION OF BUILDERS');
+    }, 3.4);
+
+    // Step 7 — Scroll indicator appears (4.8s – 5.2s)
+    tl.to(scrollHint, {
+      opacity: 1,
+      duration: 0.4,
+      ease: 'power2.out',
+    }, 4.8);
+
+    // ── Idle state: gentle glow pulse on wordmark ──
+    tl.add(() => {
+      gsap.to(wordmark, {
+        textShadow: '0 0 30px rgba(6,182,212,0.4), 0 0 60px rgba(107,33,168,0.2)',
+        duration: 5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+    }, 5.2);
+  }
 }
 
 function typewriterEffect(element, text) {
   let index = 0;
-  const speed = 40;
+  const speed = 35;
 
   function type() {
     if (index < text.length) {
@@ -72,7 +156,6 @@ function typewriterEffect(element, text) {
       index++;
       setTimeout(type, speed);
     } else {
-      // After typing, glitch then resolve
       setTimeout(() => glitchEffect(element, text), 400);
     }
   }
@@ -90,7 +173,6 @@ function glitchEffect(element, originalText) {
       .split('')
       .map((char, i) => {
         if (char === ' ') return ' ';
-        // Progressively resolve from left to right
         if (i < (iterations / maxIterations) * originalText.length) {
           return originalText[i];
         }
@@ -104,7 +186,6 @@ function glitchEffect(element, originalText) {
       clearInterval(interval);
       element.textContent = originalText;
 
-      // Hide cursor after resolved
       const cursor = document.querySelector('.tagline-cursor');
       if (cursor) {
         gsap.to(cursor, {
