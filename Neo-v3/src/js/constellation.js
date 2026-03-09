@@ -471,4 +471,7 @@ function _buildConstellation() {
       },
     });
   }
+
+  // Refresh after pin is registered so downstream triggers recalculate positions
+  ScrollTrigger.refresh();
 }

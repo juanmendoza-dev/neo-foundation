@@ -113,6 +113,9 @@ export function initStarfield(canvas) {
   // ── Animate ───────────────────────────────
   const clock = new THREE.Clock();
 
+  // Fade in canvas after first render to prevent black flash
+  let revealed = false;
+
   function animate() {
     requestAnimationFrame(animate);
     const elapsed = clock.getElapsedTime();
@@ -147,6 +150,11 @@ export function initStarfield(canvas) {
     camera.position.y += (mouse.y * 2 - camera.position.y) * 0.02;
 
     renderer.render(scene, camera);
+
+    if (!revealed) {
+      revealed = true;
+      canvas.style.opacity = '1';
+    }
   }
 
   animate();
