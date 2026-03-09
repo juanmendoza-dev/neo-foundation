@@ -1062,3 +1062,297 @@ body {
   margin-top: 3rem;
   opacity: 0;
 }
+
+/* ============================================
+   Chapter 5 — Get Involved (Mission Briefing)
+   ============================================ */
+.chapter-5 {
+  padding: 6rem 2rem 4rem;
+}
+
+.ch5-label { opacity: 0; }
+.ch5-title {
+  opacity: 0;
+  transform: translateY(30px);
+  filter: blur(6px);
+}
+
+.involve-content {
+  max-width: 1000px;
+  text-align: center;
+}
+
+.involve-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  font-weight: 300;
+  color: rgba(226, 232, 240, 0.5);
+  line-height: 1.8;
+  margin-top: -1.5rem;
+  margin-bottom: 3rem;
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+/* ── CTA Cards Grid ─────────────────────── */
+.involve-cta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+@media (max-width: 768px) {
+  .involve-cta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.involve-cta-card {
+  text-decoration: none;
+  color: inherit;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.involve-cta-inner {
+  position: relative;
+  padding: 2rem 1.5rem 1.5rem;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 182, 212, 0.04) 0%,
+    rgba(6, 182, 212, 0.01) 100%
+  );
+  border: 1px solid rgba(6, 182, 212, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.involve-cta-card:hover .involve-cta-inner {
+  border-color: rgba(6, 182, 212, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(6, 182, 212, 0.08);
+}
+
+/* Accent bar at top */
+.involve-cta-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--teal), rgba(6, 182, 212, 0.3));
+  opacity: 0.6;
+}
+
+.involve-cta-accent-purple {
+  background: linear-gradient(90deg, var(--purple), rgba(107, 33, 168, 0.3));
+}
+
+.involve-cta-accent-gold {
+  background: linear-gradient(90deg, var(--gold), rgba(245, 158, 11, 0.3));
+}
+
+/* Icon */
+.involve-cta-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  color: var(--teal);
+  background: rgba(6, 182, 212, 0.06);
+}
+
+.involve-icon-purple {
+  border-color: rgba(107, 33, 168, 0.2);
+  color: var(--purple);
+  background: rgba(107, 33, 168, 0.06);
+}
+
+.involve-icon-gold {
+  border-color: rgba(245, 158, 11, 0.2);
+  color: var(--gold);
+  background: rgba(245, 158, 11, 0.06);
+}
+
+/* Labels */
+.involve-cta-audience {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  color: var(--teal);
+  margin-bottom: 0.6rem;
+}
+
+.involve-cta-heading {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.6rem;
+}
+
+.involve-cta-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: rgba(226, 232, 240, 0.5);
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+
+.involve-cta-action {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: var(--teal);
+  opacity: 0.7;
+  transition: opacity 0.3s ease, letter-spacing 0.3s ease;
+}
+
+.involve-action-purple { color: var(--purple); }
+.involve-action-gold { color: var(--gold); }
+
+.involve-cta-card:hover .involve-cta-action {
+  opacity: 1;
+  letter-spacing: 0.4em;
+}
+
+.involve-arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.involve-cta-card:hover .involve-arrow {
+  transform: translateX(4px);
+}
+
+/* ── Events Section ─────────────────────── */
+.involve-events {
+  margin-top: 1rem;
+}
+
+.involve-events-heading {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.4em;
+  color: rgba(226, 232, 240, 0.3);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.involve-events-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .involve-events-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.involve-event-card {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.involve-event-inner {
+  position: relative;
+  padding: 1.5rem;
+  background: rgba(226, 232, 240, 0.02);
+  border: 1px solid rgba(226, 232, 240, 0.06);
+  border-radius: 4px;
+  text-align: left;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.involve-event-card:hover .involve-event-inner {
+  border-color: rgba(6, 182, 212, 0.2);
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.05);
+}
+
+/* Status indicator */
+.involve-event-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  color: var(--teal);
+  margin-bottom: 0.8rem;
+}
+
+.involve-event-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 8px var(--teal);
+  animation: event-pulse 2s ease-in-out infinite;
+}
+
+@keyframes event-pulse {
+  0%, 100% { opacity: 0.5; box-shadow: 0 0 4px var(--teal); }
+  50%      { opacity: 1; box-shadow: 0 0 12px var(--teal); }
+}
+
+.involve-event-status-pending {
+  color: rgba(226, 232, 240, 0.25);
+}
+
+.involve-event-dot-pending {
+  background: rgba(226, 232, 240, 0.2);
+  box-shadow: none;
+  animation: none;
+}
+
+.involve-event-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.8rem;
+}
+
+.involve-event-title-dim {
+  color: rgba(226, 232, 240, 0.2);
+}
+
+.involve-event-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.involve-event-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: rgba(226, 232, 240, 0.4);
+}
+
+.involve-event-detail svg {
+  color: rgba(6, 182, 212, 0.4);
+  flex-shrink: 0;
+}
+
+.involve-event-tbd {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: rgba(226, 232, 240, 0.15);
+}
