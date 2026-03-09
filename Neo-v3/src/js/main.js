@@ -9,6 +9,7 @@ import { initConstellation } from './constellation.js';
 import { initImpact } from './impact.js';
 import { initCrew } from './crew.js';
 import { initInvolve } from './involve.js';
+import { initOutro } from './outro.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -34,5 +35,6 @@ initConstellation(() => {
   initImpact();
   initCrew();
   initInvolve(lenis);
+  initOutro();
   ScrollTrigger.refresh();
 });

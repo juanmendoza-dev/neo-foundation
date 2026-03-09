@@ -1356,3 +1356,153 @@ body {
   font-weight: 300;
   color: rgba(226, 232, 240, 0.15);
 }
+
+/* ============================================
+   Outro / Footer — End of Transmission
+   ============================================ */
+.outro {
+  position: relative;
+  z-index: 1;
+  padding: 6rem 2rem 3rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.outro-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Fading edge at top — cinematic fade-in from section above */
+.outro-fade-edge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, var(--black), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Closing statement ──────────────────── */
+.outro-statement {
+  margin-bottom: 3rem;
+}
+
+.outro-line {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--white);
+  opacity: 0;
+  transform: translateY(25px);
+}
+
+.outro-line-1 {
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  margin-bottom: 0.5rem;
+}
+
+.outro-line-2 {
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  color: var(--teal);
+  text-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+}
+
+/* ── Divider ────────────────────────────── */
+.outro-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+}
+
+.outro-divider-line {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.3));
+}
+
+.outro-divider-line:last-child {
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.3), transparent);
+}
+
+.outro-divider-star {
+  color: var(--teal);
+  font-size: 0.7rem;
+  opacity: 0.5;
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
+}
+
+/* ── Logo ───────────────────────────────── */
+.outro-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  color: var(--white);
+  margin-bottom: 2rem;
+  opacity: 0;
+  text-shadow: 0 0 15px rgba(226, 232, 240, 0.1);
+}
+
+/* ── Social links ───────────────────────── */
+.outro-socials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+}
+
+.outro-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(226, 232, 240, 0.1);
+  color: rgba(226, 232, 240, 0.4);
+  text-decoration: none;
+  transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.outro-social-link:hover {
+  color: var(--teal);
+  border-color: rgba(6, 182, 212, 0.4);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+  transform: translateY(-2px);
+}
+
+/* ── Email ──────────────────────────────── */
+.outro-email {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: rgba(226, 232, 240, 0.35);
+  text-decoration: none;
+  margin-bottom: 2rem;
+  transition: color 0.3s ease;
+  opacity: 0;
+}
+
+.outro-email:hover {
+  color: var(--teal);
+}
+
+/* ── Copyright ──────────────────────────── */
+.outro-copyright {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: rgba(226, 232, 240, 0.12);
+  opacity: 0;
+}
