@@ -26,15 +26,15 @@ const ICON_FILES = {
 // ── Skills in exact display order ──
 // VS Code = hub, connects to everything
 // HTML/CSS/JS = web trio, connect to each other only
+// C++ = connects to VS Code only
 // Scratch = beginner gateway, no connections
-// C++ = standalone, no connections
 const SKILLS = [
-  { id: 'scratch', label: 'Scratch',    x: 8,  y: 50, related: [],                             gateway: true },
+  { id: 'scratch', label: 'Scratch',    x: 8,  y: 50, related: [],                                      gateway: true },
   { id: 'vscode',  label: 'VS Code',    x: 38, y: 65, related: ['scratch', 'html', 'css', 'js', 'cpp'] },
   { id: 'html',    label: 'HTML',       x: 30, y: 25, related: ['css', 'js'] },
   { id: 'css',     label: 'CSS',        x: 50, y: 18, related: ['html', 'js'] },
   { id: 'js',      label: 'JavaScript', x: 62, y: 42, related: ['html', 'css'] },
-  { id: 'cpp',     label: 'C++',        x: 82, y: 35, related: [] },
+  { id: 'cpp',     label: 'C++',        x: 82, y: 35, related: ['vscode'] },
 ];
 
 // ── Constellation lines (always visible at low opacity) ──
@@ -156,7 +156,6 @@ function _buildConstellation() {
     Object.values(travelDots).forEach(({ dot }) => {
       dot.remove();
     });
-    // Reset
     Object.keys(lineElements).forEach((k) => delete lineElements[k]);
     Object.keys(travelDots).forEach((k) => delete travelDots[k]);
 
@@ -199,8 +198,19 @@ function _buildConstellation() {
     });
 
     // Restart idle line flicker for new elements
+    startLineIdleAnimations();
+  }
+
+  // ── Idle line flicker tweens (tracked so we can pause/resume) ──
+  let lineIdleTweens = [];
+
+  function startLineIdleAnimations() {
+    // Kill previous
+    lineIdleTweens.forEach((tw) => tw.kill());
+    lineIdleTweens = [];
+
     Object.values(lineElements).forEach(({ bgLine }) => {
-      gsap.to(bgLine, {
+      const tw = gsap.to(bgLine, {
         opacity: 0.05 + Math.random() * 0.08,
         duration: 1.5 + Math.random() * 2,
         ease: 'sine.inOut',
@@ -208,6 +218,7 @@ function _buildConstellation() {
         yoyo: true,
         delay: Math.random() * 3,
       });
+      lineIdleTweens.push(tw);
     });
   }
 
@@ -220,10 +231,14 @@ function _buildConstellation() {
   });
   resizeObserver.observe(container);
 
-  // ── Idle animations ──
-  Object.values(nodeElements).forEach((node) => {
+  // ── Idle node animations (tracked for pause/resume) ──
+  const idleTweens = {}; // { skillId: [tween, tween] }
+
+  Object.entries(nodeElements).forEach(([skillId, node]) => {
     const aura = node.querySelector('.const-node-aura');
-    gsap.to(aura, {
+    const tweens = [];
+
+    tweens.push(gsap.to(aura, {
       scale: 1.3,
       opacity: 0.15,
       duration: 2 + Math.random() * 2,
@@ -231,41 +246,136 @@ function _buildConstellation() {
       repeat: -1,
       yoyo: true,
       delay: Math.random() * 2,
-    });
+    }));
 
-    gsap.to(node, {
+    tweens.push(gsap.to(node, {
       y: -3 + Math.random() * 6,
       duration: 3 + Math.random() * 2,
       ease: 'sine.inOut',
       repeat: -1,
       yoyo: true,
       delay: Math.random() * 3,
-    });
+    }));
+
+    idleTweens[skillId] = tweens;
   });
+
+  // ── Global reset function — returns EVERYTHING to default ──
+  function resetConstellation() {
+    // Kill all in-flight hover tweens on nodes/lines/dots
+    gsap.killTweensOf('.const-node-icon');
+    gsap.killTweensOf('.const-node-icon img');
+    gsap.killTweensOf('.const-node-aura');
+    gsap.killTweensOf('.const-node-ring');
+
+    // Reset ALL active lines and travel dots
+    Object.values(lineElements).forEach(({ line, length }) => {
+      gsap.to(line, {
+        strokeDashoffset: length,
+        duration: 0.3,
+        ease: 'power2.in',
+        overwrite: true,
+      });
+    });
+
+    Object.values(travelDots).forEach(({ dot }) => {
+      gsap.killTweensOf(dot);
+      gsap.to(dot, { opacity: 0, duration: 0.2, overwrite: true });
+    });
+
+    // Reset ALL nodes to default state
+    SKILLS.forEach((skill) => {
+      const node = nodeElements[skill.id];
+      const brand = BRAND_COLORS[skill.id];
+      const rgb = brand.rgb;
+
+      // Restore opacity
+      gsap.to(node, { opacity: 1, duration: 0.3, overwrite: 'auto' });
+
+      // Reset icon scale
+      gsap.to(node.querySelector('.const-node-icon'), {
+        scale: 1,
+        duration: 0.3,
+        overwrite: true,
+      });
+
+      // Reset icon glow
+      gsap.to(node.querySelector('.const-node-icon img'), {
+        filter: `drop-shadow(0 0 6px rgba(${rgb}, 0.5))`,
+        duration: 0.3,
+        overwrite: true,
+      });
+
+      // Reset aura
+      gsap.to(node.querySelector('.const-node-aura'), {
+        scale: 1,
+        opacity: 0.2,
+        duration: 0.3,
+        overwrite: true,
+      });
+
+      // Reset ring
+      gsap.to(node.querySelector('.const-node-ring'), {
+        scale: 1,
+        opacity: 0.4,
+        borderColor: `${brand.primary}40`,
+        boxShadow: 'none',
+        duration: 0.3,
+        overwrite: true,
+      });
+
+      // Hide labels (except gateway)
+      if (!skill.gateway) {
+        node.querySelector('.const-node-label').classList.remove('visible');
+      }
+    });
+
+    // Resume ALL idle tweens
+    Object.values(idleTweens).forEach((tweens) => {
+      tweens.forEach((tw) => tw.resume());
+    });
+    lineIdleTweens.forEach((tw) => tw.resume());
+  }
 
   // ── Hover interactions ──
   Object.entries(nodeElements).forEach(([skillId, node]) => {
     const skill = SKILLS.find((s) => s.id === skillId);
 
     node.addEventListener('mouseenter', () => {
+      // First: reset everything cleanly (handles fast hover transitions)
+      resetConstellation();
+
       const brand = BRAND_COLORS[skillId];
       const color = brand.primary;
       const rgb = brand.rgb;
+
+      // Pause idle tweens for hovered node and its related nodes
+      const affectedIds = [skillId, ...skill.related];
+      affectedIds.forEach((id) => {
+        if (idleTweens[id]) {
+          idleTweens[id].forEach((tw) => tw.pause());
+        }
+      });
+      // Pause line idle flicker during hover
+      lineIdleTweens.forEach((tw) => tw.pause());
 
       // Brighten hovered node
       gsap.to(node.querySelector('.const-node-icon'), {
         scale: 1.2,
         duration: 0.3,
         ease: 'back.out(2)',
+        overwrite: true,
       });
       gsap.to(node.querySelector('.const-node-icon img'), {
         filter: `drop-shadow(0 0 12px rgba(${rgb}, 0.9)) drop-shadow(0 0 24px rgba(${rgb}, 0.5))`,
         duration: 0.3,
+        overwrite: true,
       });
       gsap.to(node.querySelector('.const-node-aura'), {
         scale: 1.8,
         opacity: 0.6,
         duration: 0.4,
+        overwrite: true,
       });
       gsap.to(node.querySelector('.const-node-ring'), {
         scale: 1.3,
@@ -273,6 +383,7 @@ function _buildConstellation() {
         borderColor: color,
         boxShadow: `0 0 15px rgba(${rgb}, 0.3), inset 0 0 15px rgba(${rgb}, 0.1)`,
         duration: 0.3,
+        overwrite: true,
       });
       node.querySelector('.const-node-label').classList.add('visible');
 
@@ -288,10 +399,12 @@ function _buildConstellation() {
           scale: 1.5,
           opacity: 0.4,
           duration: 0.4,
+          overwrite: true,
         });
         gsap.to(relNode.querySelector('.const-node-icon img'), {
           filter: `drop-shadow(0 0 10px rgba(${relBrand.rgb}, 0.7)) drop-shadow(0 0 20px rgba(${relBrand.rgb}, 0.4))`,
           duration: 0.4,
+          overwrite: true,
         });
 
         // Attention pulse
@@ -304,6 +417,7 @@ function _buildConstellation() {
           ease: 'power2.out',
           yoyo: true,
           repeat: 1,
+          overwrite: true,
         });
       });
 
@@ -318,6 +432,7 @@ function _buildConstellation() {
           duration: 0.6,
           delay: i * 0.1,
           ease: 'power2.out',
+          overwrite: true,
         });
 
         const td = travelDots[key];
@@ -325,6 +440,7 @@ function _buildConstellation() {
           const fromPos = getNodeCenter(skillId);
           const toPos = getNodeCenter(relId);
 
+          gsap.killTweensOf(td.dot);
           gsap.set(td.dot, { attr: { cx: fromPos.x, cy: fromPos.y }, opacity: 0 });
           gsap.to(td.dot, {
             attr: { cx: toPos.x, cy: toPos.y },
@@ -342,77 +458,13 @@ function _buildConstellation() {
       // Dim unrelated nodes to 20%
       SKILLS.forEach((s) => {
         if (s.id !== skillId && !skill.related.includes(s.id)) {
-          gsap.to(nodeElements[s.id], { opacity: 0.2, duration: 0.3 });
+          gsap.to(nodeElements[s.id], { opacity: 0.2, duration: 0.3, overwrite: 'auto' });
         }
       });
     });
 
     node.addEventListener('mouseleave', () => {
-      const brand = BRAND_COLORS[skillId];
-      const rgb = brand.rgb;
-
-      gsap.to(node.querySelector('.const-node-icon'), {
-        scale: 1,
-        duration: 0.3,
-      });
-      gsap.to(node.querySelector('.const-node-icon img'), {
-        filter: `drop-shadow(0 0 6px rgba(${rgb}, 0.5))`,
-        duration: 0.3,
-      });
-      gsap.to(node.querySelector('.const-node-aura'), {
-        scale: 1,
-        opacity: 0.2,
-        duration: 0.4,
-      });
-      gsap.to(node.querySelector('.const-node-ring'), {
-        scale: 1,
-        opacity: 0.4,
-        borderColor: `${brand.primary}40`,
-        boxShadow: 'none',
-        duration: 0.3,
-      });
-      // Don't remove label from gateway node
-      if (!skill.gateway) {
-        node.querySelector('.const-node-label').classList.remove('visible');
-      }
-
-      // Reset related nodes
-      skill.related.forEach((relId) => {
-        const relNode = nodeElements[relId];
-        const relBrand = BRAND_COLORS[relId];
-        if (!relNode) return;
-
-        const relSkill = SKILLS.find((s) => s.id === relId);
-        if (!relSkill.gateway) {
-          relNode.querySelector('.const-node-label').classList.remove('visible');
-        }
-        gsap.to(relNode.querySelector('.const-node-aura'), {
-          scale: 1,
-          opacity: 0.2,
-          duration: 0.4,
-        });
-        gsap.to(relNode.querySelector('.const-node-icon img'), {
-          filter: `drop-shadow(0 0 6px rgba(${relBrand.rgb}, 0.5))`,
-          duration: 0.4,
-        });
-      });
-
-      // Reset lines
-      skill.related.forEach((relId) => {
-        const key = [skillId, relId].sort().join('-');
-        const el = lineElements[key];
-        if (!el) return;
-        gsap.to(el.line, {
-          strokeDashoffset: el.length,
-          duration: 0.4,
-          ease: 'power2.in',
-        });
-      });
-
-      // Restore all node opacity
-      SKILLS.forEach((s) => {
-        gsap.to(nodeElements[s.id], { opacity: 1, duration: 0.3 });
-      });
+      resetConstellation();
     });
   });
 
