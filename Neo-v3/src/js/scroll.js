@@ -19,6 +19,7 @@ export function initScroll(lenis) {
   initBackgroundShifts();
   initAsteroids();
   initOrbitalDividers();
+  initChapterWipes();
   initChapter1();
   initChapter2Intro();
   initParallaxNumbers();
@@ -303,6 +304,38 @@ function initChapter2Intro() {
       },
     });
   }
+}
+
+// ── Chapter Wipe Transitions ────────────
+function initChapterWipes() {
+  const wipe = document.querySelector('.chapter-wipe');
+  const dividers = document.querySelectorAll('.orbital-divider');
+  if (!wipe || dividers.length === 0) return;
+
+  dividers.forEach((divider) => {
+    // Each divider triggers a wipe: slide in from left, sweep across, exit right
+    ScrollTrigger.create({
+      trigger: divider,
+      start: 'top 85%',
+      end: 'top 15%',
+      scrub: 0.5,
+      onUpdate: (self) => {
+        if (!hasScrolled) return;
+        // 0→0.5: wipe enters from left (-105% → 0%)
+        // 0.5→1: wipe exits to right (0% → 105%)
+        const p = self.progress;
+        let x;
+        if (p <= 0.5) {
+          // Enter: -105% to 0%
+          x = -105 + (p / 0.5) * 105;
+        } else {
+          // Exit: 0% to 105%
+          x = ((p - 0.5) / 0.5) * 105;
+        }
+        wipe.style.transform = `translateX(${x}%)`;
+      },
+    });
+  });
 }
 
 // ── Parallax Chapter Numbers ────────────
