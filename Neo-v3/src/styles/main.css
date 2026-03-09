@@ -223,54 +223,80 @@ body {
   box-shadow: 0 0 6px var(--teal), 0 0 15px rgba(6, 182, 212, 0.4);
 }
 
-/* ── Scroll Progress Indicator ───────────── */
-.scroll-progress {
+/* ── Mission Track (Scroll Progress) ────── */
+.mission-track {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 36px;
-  height: 36px;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
   opacity: 0;
   transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
-.scroll-progress.visible {
+.mission-track.visible {
   opacity: 1;
 }
 
-.scroll-progress-ring {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
+.mission-track-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.45rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(6, 182, 212, 0.35);
+  writing-mode: horizontal-tb;
 }
 
-.scroll-progress-bg {
-  fill: none;
-  stroke: rgba(226, 232, 240, 0.1);
-  stroke-width: 2;
+.mission-track-line {
+  position: relative;
+  width: 2px;
+  height: 30vh;
+  background: rgba(226, 232, 240, 0.06);
+  border-radius: 1px;
+  overflow: visible;
 }
 
-.scroll-progress-fill {
-  fill: none;
-  stroke: var(--teal);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-dasharray: 100.53;
-  stroke-dashoffset: 100.53;
-  filter: drop-shadow(0 0 4px var(--teal));
-}
-
-.scroll-progress-dot {
+.mission-track-fill {
   position: absolute;
-  top: 50%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(180deg, var(--teal), rgba(107, 33, 168, 0.6));
+  border-radius: 1px;
+  box-shadow: 0 0 6px rgba(6, 182, 212, 0.3);
+  transition: height 0.05s linear;
+}
+
+.mission-track-dot {
+  position: absolute;
   left: 50%;
-  width: 4px;
-  height: 4px;
+  top: 0%;
+  width: 8px;
+  height: 8px;
   background: var(--teal);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 6px var(--teal);
+  box-shadow: 0 0 8px var(--teal), 0 0 20px rgba(6, 182, 212, 0.4);
+  transition: top 0.05s linear;
+}
+
+/* Glow trail behind the dot */
+.mission-track-dot::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 12px;
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.4), transparent);
+  border-radius: 1px;
 }
 
 /* ── Drifting Asteroids ──────────────────── */

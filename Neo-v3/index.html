@@ -7,13 +7,14 @@
   <link rel="stylesheet" href="/src/styles/main.css" />
 </head>
 <body>
-  <!-- Scroll progress indicator -->
-  <div class="scroll-progress">
-    <svg class="scroll-progress-ring" viewBox="0 0 36 36">
-      <circle class="scroll-progress-bg" cx="18" cy="18" r="16" />
-      <circle class="scroll-progress-fill" cx="18" cy="18" r="16" />
-    </svg>
-    <span class="scroll-progress-dot"></span>
+  <!-- Scroll progress — mission trajectory -->
+  <div class="mission-track">
+    <span class="mission-track-label mission-track-launch">LAUNCH</span>
+    <div class="mission-track-line">
+      <div class="mission-track-fill"></div>
+      <div class="mission-track-dot"></div>
+    </div>
+    <span class="mission-track-label mission-track-orbit">ORBIT</span>
   </div>
 
   <!-- Drifting asteroid -->

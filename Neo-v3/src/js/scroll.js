@@ -25,30 +25,30 @@ export function initScroll(lenis) {
   initParallaxNumbers();
 }
 
-// ── Scroll Progress Ring ──────────────────
+// ── Mission Track (Scroll Progress) ──────
 function initScrollProgress() {
-  const progress = document.querySelector('.scroll-progress');
-  const fill = document.querySelector('.scroll-progress-fill');
-  if (!fill || !progress) return;
-
-  const circumference = 2 * Math.PI * 16; // r=16
+  const track = document.querySelector('.mission-track');
+  const fill = document.querySelector('.mission-track-fill');
+  const dot = document.querySelector('.mission-track-dot');
+  if (!track || !fill || !dot) return;
 
   // Show after scrolling past hero
   ScrollTrigger.create({
     trigger: '#hero',
     start: 'bottom top',
-    onEnter: () => progress.classList.add('visible'),
-    onLeaveBack: () => progress.classList.remove('visible'),
+    onEnter: () => track.classList.add('visible'),
+    onLeaveBack: () => track.classList.remove('visible'),
   });
 
-  // Update fill on scroll
+  // Update fill height and dot position on scroll
   ScrollTrigger.create({
     trigger: document.body,
     start: 'top top',
     end: 'bottom bottom',
     onUpdate: (self) => {
-      const offset = circumference * (1 - self.progress);
-      fill.style.strokeDashoffset = offset;
+      const pct = self.progress * 100;
+      fill.style.height = pct + '%';
+      dot.style.top = pct + '%';
     },
   });
 }
