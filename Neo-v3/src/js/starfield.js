@@ -118,6 +118,10 @@ export function initStarfield(canvas) {
 
   function animate() {
     requestAnimationFrame(animate);
+
+    // Skip rendering when tab is hidden — saves GPU cycles
+    if (document.hidden) return;
+
     const elapsed = clock.getElapsedTime();
     material.uniforms.uTime.value = elapsed;
 

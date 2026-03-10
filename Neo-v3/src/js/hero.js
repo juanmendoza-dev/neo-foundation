@@ -1,4 +1,5 @@
 import gsap from 'gsap';
+import { initGlobe } from './globe.js';
 
 export function initHero() {
   const hero = document.getElementById('hero');
@@ -10,7 +11,7 @@ export function initHero() {
   const lineRight = hero.querySelector('.hero-line-right');
   const glow = hero.querySelector('.hero-glow');
   const tagline = hero.querySelector('.hero-tagline');
-  const scrollIndicator = hero.querySelector('.hero-scroll-indicator');
+  const globeContainer = hero.querySelector('.hero-globe');
   const sparklesContainer = hero.querySelector('.hero-sparkles');
   const titleEl = hero.querySelector('.hero-title');
 
@@ -22,7 +23,7 @@ export function initHero() {
   gsap.set([lineLeft, lineRight], { scaleX: 0 });
   gsap.set(glow, { opacity: 0 });
   gsap.set(tagline, { opacity: 0, y: 20 });
-  gsap.set(scrollIndicator, { opacity: 0 });
+  gsap.set(globeContainer, { opacity: 0 });
   gsap.set(titleEl, { letterSpacing: '0.2em' });
 
   // ── Master timeline ─────────────────────────
@@ -80,10 +81,12 @@ export function initHero() {
     ease: 'power2.out',
   }, afterReveal + 0.2);
 
-  tl.to(scrollIndicator, {
+  // Globe fades in and initializes
+  tl.to(globeContainer, {
     opacity: 1,
-    duration: 0.4,
+    duration: 0.8,
     ease: 'power2.out',
+    onStart: () => initGlobe(globeContainer),
   }, afterReveal + 0.6);
 
   // 4. Sparkles — staggered fade in after text reveal

@@ -226,8 +226,11 @@ function _buildConstellation() {
   buildLines();
 
   // ── ResizeObserver — recalculate line positions on layout shift ──
+  // Debounce to avoid rebuilding on every frame during resize
+  let resizeTimer;
   const resizeObserver = new ResizeObserver(() => {
-    buildLines();
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => buildLines(), 200);
   });
   resizeObserver.observe(container);
 

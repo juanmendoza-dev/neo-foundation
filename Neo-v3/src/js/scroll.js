@@ -8,12 +8,13 @@ let hasScrolled = false;
 window.addEventListener('scroll', () => { hasScrolled = true; }, { once: true });
 
 export function initScroll(lenis) {
-  // Sync Lenis with GSAP ScrollTrigger
+  // Sync Lenis with GSAP ScrollTrigger — proper bidirectional sync
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((time) => {
     lenis.raf(time * 1000);
   });
-  gsap.ticker.lagSmoothing(0);
+  // Re-enable lag smoothing — disabling it causes frame spikes to propagate
+  gsap.ticker.lagSmoothing(500, 33);
 
   initScrollProgress();
   initBackgroundShifts();

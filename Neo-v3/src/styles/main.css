@@ -271,45 +271,20 @@ body {
   opacity: 0;
 }
 
-/* Scroll indicator */
-.hero-scroll-indicator {
-  margin-top: 3rem;
+/* Globe */
+.hero-globe {
+  margin-top: 2.5rem;
   opacity: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 20px rgba(107, 33, 168, 0.3)) drop-shadow(0 0 40px rgba(107, 33, 168, 0.15));
 }
 
-.hero-scroll-line {
-  width: 1px;
-  height: 48px;
-  background: rgba(226, 232, 240, 0.15);
-  position: relative;
-  overflow: visible;
-}
-
-.hero-scroll-dot {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--teal);
-  box-shadow: 0 0 6px var(--teal), 0 0 12px rgba(6, 182, 212, 0.3);
-  animation: scroll-dot-pulse 2s ease-in-out infinite;
-}
-
-@keyframes scroll-dot-pulse {
-  0%, 100% {
-    top: 0;
-    opacity: 1;
-  }
-  50% {
-    top: 40px;
-    opacity: 0.4;
-  }
+.hero-globe-canvas {
+  width: 180px;
+  height: 180px;
+  display: block;
 }
 
 /* ── Shooting Star ───────────────────────── */
@@ -445,6 +420,7 @@ body {
   background: linear-gradient(90deg, transparent, var(--purple), var(--teal), var(--purple), transparent);
   opacity: 0.4;
   transition: none;
+  will-change: width;
 }
 
 .orbital-dot {
@@ -528,6 +504,7 @@ body {
   color: var(--white);
   opacity: 0;
   transform: translateY(30px);
+  will-change: transform, opacity;
 }
 
 .highlight-teal {
@@ -588,6 +565,8 @@ body {
   display: flex;
   height: 100vh;
   will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .const-panel {
@@ -1054,6 +1033,7 @@ body {
   perspective: 800px;
   opacity: 0;
   transform: translateY(60px);
+  will-change: transform, opacity;
 }
 
 .crew-card-inner {
@@ -1263,6 +1243,7 @@ body {
   color: inherit;
   opacity: 0;
   transform: translateY(40px);
+  will-change: transform, opacity;
 }
 
 .involve-cta-inner {
@@ -1414,6 +1395,7 @@ body {
 .involve-event-card {
   opacity: 0;
   transform: translateY(30px);
+  will-change: transform, opacity;
 }
 
 .involve-event-inner {
