@@ -44,6 +44,7 @@ function createAnimatedStarfield() {
     starfieldContainer.style.pointerEvents = 'none';
     starfieldContainer.style.zIndex = '-10';
     starfieldContainer.style.overflow = 'hidden';
+    starfieldContainer.style.opacity = '0'; // starts hidden — GSAP hero intro fades it in
 
     document.body.appendChild(starfieldContainer);
 
@@ -1214,6 +1215,12 @@ function togglePerformanceMode() {
             .glowfigma, .glowps {
                 box-shadow: none !important;
             }
+
+            /* Simplify hero logo idle glow */
+            .hero-logo-idle-glow {
+                animation: heroLogoSpin 20s linear infinite !important;
+                filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.3)) !important;
+            }
         `;
         document.head.appendChild(style);
     } else {
@@ -1336,6 +1343,187 @@ function initScrollReveal() {
     revealElements.forEach(el => revealObserver.observe(el));
 }
 
+// Cinematic hero intro sequence
+function initCinematicHero() {
+    const logo = document.getElementById('hero-logo');
+    const logoFinal = document.getElementById('hero-logo-final');
+    const wordmark = document.getElementById('hero-wordmark');
+    const taglineWrap = document.getElementById('hero-tagline-wrap');
+    const taglineEl = document.getElementById('hero-tagline');
+    const cursorEl = document.getElementById('hero-cursor');
+    const shockwave = document.getElementById('hero-shockwave');
+    const scrollIndicator = document.getElementById('hero-scroll-indicator');
+    const heroIntro = document.getElementById('hero-intro');
+    const heroContent = document.getElementById('hero-content');
+
+    if (!logo || !wordmark || typeof gsap === 'undefined') {
+        // GSAP not loaded or elements missing — show content immediately
+        if (heroContent) {
+            heroContent.style.opacity = '1';
+            heroContent.style.pointerEvents = 'auto';
+        }
+        if (heroIntro) heroIntro.style.display = 'none';
+        return;
+    }
+
+    // Preload logo image before starting timeline
+    const preloadImg = new Image();
+    preloadImg.src = 'images/neoLogo.png';
+
+    preloadImg.onload = function() {
+        // Pause the CSS spin initially so GSAP can control opacity/scale first
+        logo.style.animationPlayState = 'paused';
+
+        const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+
+        // 0.0s — starfield is already rendering, page is dark. Fade in starfield container.
+        tl.to('.animated-starfield', {
+            opacity: 1,
+            duration: 1.5,
+            ease: 'power1.inOut'
+        }, 0);
+
+        // 0.5s — logo appears center screen at 280px with weight
+        tl.to(logo, {
+            opacity: 1,
+            scale: 1,
+            duration: 1.0,
+            ease: 'power3.out',
+            onStart: function() {
+                // Start CSS rotation
+                logo.style.animationPlayState = 'running';
+            }
+        }, 0.5);
+
+        // Logo glow ramps up
+        tl.to(logo, {
+            filter: 'drop-shadow(0 0 20px #06B6D4)',
+            duration: 0.8,
+            ease: 'power2.inOut'
+        }, 0.8);
+
+        // 1.5s — shockwave pulse
+        tl.set(shockwave, {
+            opacity: 0.8,
+            width: 0,
+            height: 0,
+            x: '-50%',
+            y: '-50%',
+            left: '50%',
+            top: '50%',
+            position: 'absolute'
+        }, 1.5);
+
+        tl.to(shockwave, {
+            width: 600,
+            height: 600,
+            opacity: 0,
+            duration: 1.0,
+            ease: 'power2.out',
+            x: '-50%',
+            y: '-50%'
+        }, 1.5);
+
+        // 2.2s — logo shrinks to 64px and moves up, then we crossfade to final layout
+        tl.to(logo, {
+            width: 64,
+            duration: 1.0,
+            ease: 'elastic.out(1, 0.6)'
+        }, 2.2);
+
+        tl.to(logo, {
+            filter: 'drop-shadow(0 0 20px #06B6D4)',
+            duration: 0.5
+        }, 2.2);
+
+        // 2.8s — wordmark fades up
+        tl.to(wordmark, {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power2.out'
+        }, 2.8);
+        tl.from(wordmark, {
+            y: 20,
+            duration: 0.8,
+            ease: 'power2.out'
+        }, 2.8);
+
+        // 3.4s — tagline types out
+        tl.call(function() {
+            const fullText = 'Where Innovation and Creativity Meet';
+            taglineWrap.style.opacity = '1';
+            cursorEl.style.opacity = '1';
+            cursorEl.classList.add('hero-cursor-blink');
+
+            let charIndex = 0;
+            const typeInterval = setInterval(function() {
+                if (charIndex < fullText.length) {
+                    taglineEl.textContent += fullText[charIndex];
+                    charIndex++;
+                } else {
+                    clearInterval(typeInterval);
+                    // Cursor blinks 3 times then fades
+                    let blinks = 0;
+                    const blinkInterval = setInterval(function() {
+                        blinks++;
+                        if (blinks >= 6) { // 3 full blink cycles (on/off)
+                            clearInterval(blinkInterval);
+                            cursorEl.classList.remove('hero-cursor-blink');
+                            gsap.to(cursorEl, { opacity: 0, duration: 0.3 });
+                        }
+                    }, 300);
+                }
+            }, 45);
+        }, [], 3.4);
+
+        // 4.8s — scroll indicator fades in
+        tl.to(scrollIndicator, {
+            opacity: 1,
+            duration: 0.6,
+            ease: 'power2.out'
+        }, 4.8);
+
+        // 6.0s — transition: fade out intro, show persistent hero content
+        tl.call(function() {
+            // Set up the final logo with idle glow animation
+            if (logoFinal) {
+                logoFinal.style.opacity = '1';
+                logoFinal.classList.remove('hero-logo-spin');
+                logoFinal.classList.add('hero-logo-idle-glow');
+            }
+
+            // Crossfade: hide intro overlay, show hero content
+            gsap.to(heroIntro, {
+                opacity: 0,
+                duration: 0.8,
+                ease: 'power2.inOut',
+                onComplete: function() {
+                    heroIntro.style.display = 'none';
+                }
+            });
+
+            gsap.to(heroContent, {
+                opacity: 1,
+                duration: 0.8,
+                ease: 'power2.inOut',
+                onComplete: function() {
+                    heroContent.style.pointerEvents = 'auto';
+                }
+            });
+        }, [], 6.0);
+    };
+
+    preloadImg.onerror = function() {
+        // Logo failed to load — show content immediately
+        if (heroContent) {
+            heroContent.style.opacity = '1';
+            heroContent.style.pointerEvents = 'auto';
+        }
+        if (heroIntro) heroIntro.style.display = 'none';
+    };
+}
+
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize based on device capabilities
@@ -1350,32 +1538,36 @@ document.addEventListener('DOMContentLoaded', () => {
     initActiveNavIndicator();
     initScrollReveal();
 
-    // delay fat animations for better initial load
-    setTimeout(() => {
-        createAnimatedStarfield();
-        createShootingStars();
+    // Start starfield + particles immediately (hero intro fades them in)
+    createAnimatedStarfield();
+    createShootingStars();
 
-        const mainTitle = document.querySelector('h1');
+    // initialize particles
+    const particleContainer = document.getElementById('particles-hero');
+    if (particleContainer && window.EnhancedParticleSystem) {
+        new window.EnhancedParticleSystem('particles-hero', {
+            particleCount: isMobile ? 30 : 75,
+            particleColor: '#FFFFFF',
+            speed: isMobile ? 0.2 : 0.35
+        });
+    }
+
+    // Initialize volunteer hours odometer
+    initVolunteerHoursOdometer();
+
+    // Initialize currently volunteers odometer
+    initCurrentlyVolunteersOdometer();
+
+    // Fire cinematic hero intro (waits for logo preload internally)
+    initCinematicHero();
+
+    // Title sparkles — observe after intro has a moment to set up
+    setTimeout(() => {
+        const mainTitle = document.querySelector('#hero-content h1, h1');
         if (mainTitle) {
             titleObserver.observe(mainTitle);
         }
-
-        // initialize particles
-        const particleContainer = document.getElementById('particles-hero');
-        if (particleContainer && window.EnhancedParticleSystem) {
-            new window.EnhancedParticleSystem('particles-hero', {
-                particleCount: isMobile ? 30 : 75,
-                particleColor: '#FFFFFF',
-                speed: isMobile ? 0.2 : 0.35
-            });
-        }
-
-        // Initialize volunteer hours odometer
-        initVolunteerHoursOdometer();
-
-        // Initialize currently volunteers odometer
-        initCurrentlyVolunteersOdometer();
-    }, 100);
+    }, 7000);
 });
 
 // touch device optimizations
@@ -1383,16 +1575,25 @@ if (isMobile) {
     document.addEventListener('touchstart', function() { }, { passive: true });
     document.addEventListener('touchmove', function() { }, { passive: true });
 
-    // reduce motion and other stuff for mobile yayayay
+    // reduce motion for mobile — exempt hero intro and spinning elements
     const style = document.createElement('style');
     style.textContent = `
-        * {
+        *:not(.hero-logo-spin):not(.hero-logo-idle-glow):not(.hero-cursor-blink):not(.animate-scroll-dot):not(.spinning):not(#hero-logo):not(#hero-logo-final) {
             animation-duration: 0.5s !important;
             animation-iteration-count: 1 !important;
             transition-duration: 0.3s !important;
         }
         .spinning {
             animation-duration: 30s !important;
+            animation-iteration-count: infinite !important;
+        }
+        .hero-logo-spin,
+        .hero-logo-idle-glow {
+            animation-duration: 20s !important;
+            animation-iteration-count: infinite !important;
+        }
+        .animate-scroll-dot {
+            animation-iteration-count: infinite !important;
         }
     `;
     document.head.appendChild(style);
