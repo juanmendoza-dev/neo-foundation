@@ -271,20 +271,35 @@ body {
   opacity: 0;
 }
 
-/* Globe */
+/* Globe — interactive region rendered via scissor on starfield canvas */
 .hero-globe {
   margin-top: 2.5rem;
   opacity: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  filter: drop-shadow(0 0 20px rgba(107, 33, 168, 0.3)) drop-shadow(0 0 40px rgba(107, 33, 168, 0.15));
-}
-
-.hero-globe-canvas {
   width: 180px;
   height: 180px;
-  display: block;
+  position: relative;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.hero-globe:active {
+  cursor: grabbing;
+}
+
+/* Tooltip */
+.hero-globe-tooltip {
+  position: absolute;
+  bottom: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.65rem;
+  color: rgba(226, 232, 240, 0.4);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
 }
 
 /* ── Shooting Star ───────────────────────── */

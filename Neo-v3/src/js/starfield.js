@@ -1,5 +1,12 @@
 import * as THREE from 'three';
 
+// Render callbacks — other modules can hook into the render loop
+const renderCallbacks = [];
+
+export function addRenderCallback(fn) {
+  renderCallbacks.push(fn);
+}
+
 export function initStarfield(canvas) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
@@ -153,7 +160,18 @@ export function initStarfield(canvas) {
     camera.position.x += (mouse.x * 3 - camera.position.x) * 0.02;
     camera.position.y += (mouse.y * 2 - camera.position.y) * 0.02;
 
+    // Reset viewport to full canvas before starfield render
+    const pw = window.innerWidth * renderer.getPixelRatio();
+    const ph = window.innerHeight * renderer.getPixelRatio();
+    renderer.setViewport(0, 0, pw, ph);
+    renderer.setScissorTest(false);
+    renderer.autoClear = true;
     renderer.render(scene, camera);
+
+    // Run registered render callbacks (globe, etc.)
+    for (let i = 0; i < renderCallbacks.length; i++) {
+      renderCallbacks[i]();
+    }
 
     if (!revealed) {
       revealed = true;
@@ -162,4 +180,6 @@ export function initStarfield(canvas) {
   }
 
   animate();
+
+  return renderer;
 }

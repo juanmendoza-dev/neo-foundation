@@ -1,7 +1,8 @@
 import gsap from 'gsap';
 import { initGlobe } from './globe.js';
+import { addRenderCallback } from './starfield.js';
 
-export function initHero() {
+export function initHero(sharedRenderer) {
   const hero = document.getElementById('hero');
   if (!hero) return;
 
@@ -86,7 +87,10 @@ export function initHero() {
     opacity: 1,
     duration: 0.8,
     ease: 'power2.out',
-    onStart: () => initGlobe(globeContainer),
+    onStart: () => {
+      const renderFn = initGlobe(globeContainer, sharedRenderer);
+      if (renderFn) addRenderCallback(renderFn);
+    },
   }, afterReveal + 0.6);
 
   // 4. Sparkles — staggered fade in after text reveal
