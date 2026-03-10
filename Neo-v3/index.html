@@ -37,30 +37,35 @@
 
   <!-- Hero Section -->
   <section id="hero" class="hero">
-    <!-- Logo sphere (starts centered, moves to wordmark) -->
-    <div class="hero-sphere-wrap">
-      <img class="hero-sphere" src="/images/neoLogo-removebg-preview.png" alt="Neo Foundation Logo" />
-    </div>
+    <!-- Radial glow behind text -->
+    <div class="hero-glow"></div>
 
-    <!-- Shockwave pulse (fires once) -->
-    <div class="hero-shockwave"></div>
+    <!-- Sparkle stars container (populated by JS) -->
+    <div class="hero-sparkles"></div>
 
-    <!-- Wordmark + tagline (appear after sphere settles) -->
+    <!-- Main content -->
     <div class="hero-content">
-      <div class="hero-wordmark-row">
-        <div class="hero-sphere-final">
-          <img src="/images/neoLogo-removebg-preview.png" alt="" />
-        </div>
-        <h1 class="hero-wordmark">Neo Foundation</h1>
+      <!-- Title with word reveal -->
+      <h1 class="hero-title" aria-label="The Neo Foundation.">
+        <span class="hero-word-wrap"><span class="hero-word">The</span></span>
+        <span class="hero-word-wrap"><span class="hero-word">Neo</span></span>
+        <span class="hero-word-wrap"><span class="hero-word">Foundation</span></span>
+        <span class="hero-period-wrap"><span class="hero-period">.</span></span>
+      </h1>
+
+      <!-- Horizontal lines -->
+      <div class="hero-lines">
+        <div class="hero-line hero-line-left"></div>
+        <div class="hero-line hero-line-right"></div>
       </div>
-      <p class="hero-tagline">
-        <span class="tagline-text"></span>
-        <span class="tagline-cursor">_</span>
-      </p>
-      <div class="hero-scroll-hint">
-        <span class="hero-scroll-label">SCROLL TO EXPLORE</span>
-        <div class="hero-scroll-chevron">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+
+      <!-- Tagline -->
+      <p class="hero-tagline">Where Innovation and Creativity Meet</p>
+
+      <!-- Scroll indicator -->
+      <div class="hero-scroll-indicator">
+        <div class="hero-scroll-line">
+          <div class="hero-scroll-dot"></div>
         </div>
       </div>
     </div>
