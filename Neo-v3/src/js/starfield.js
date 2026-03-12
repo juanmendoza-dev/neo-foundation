@@ -1,12 +1,5 @@
 import * as THREE from 'three';
 
-// Render callbacks — other modules can hook into the render loop
-const renderCallbacks = [];
-
-export function addRenderCallback(fn) {
-  renderCallbacks.push(fn);
-}
-
 export function initStarfield(canvas) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
@@ -19,14 +12,17 @@ export function initStarfield(canvas) {
 
   const renderer = new THREE.WebGLRenderer({
     canvas,
-    antialias: false,
-    alpha: true,
+    antialias: true,
+    alpha: false,
+    powerPreference: 'high-performance',
   });
+  renderer.setClearColor(0x0a0a0f, 1);
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   // ── Particle system ──────────────────────
-  const PARTICLE_COUNT = 2000;
+  const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+  const PARTICLE_COUNT = isMobile ? 800 : 2000;
   const geometry = new THREE.BufferGeometry();
 
   const positions = new Float32Array(PARTICLE_COUNT * 3);
@@ -106,7 +102,7 @@ export function initStarfield(canvas) {
     mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
     mouseWorld.set(mouse.x * 60, mouse.y * 35);
-  });
+  }, { passive: true });
 
   // ── Resize ────────────────────────────────
   window.addEventListener('resize', () => {
@@ -115,13 +111,10 @@ export function initStarfield(canvas) {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     material.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2);
-  });
+  }, { passive: true });
 
   // ── Animate ───────────────────────────────
   const clock = new THREE.Clock();
-
-  // Fade in canvas after first render to prevent black flash
-  let revealed = false;
 
   function animate() {
     requestAnimationFrame(animate);
@@ -160,26 +153,8 @@ export function initStarfield(canvas) {
     camera.position.x += (mouse.x * 3 - camera.position.x) * 0.02;
     camera.position.y += (mouse.y * 2 - camera.position.y) * 0.02;
 
-    // Reset viewport to full canvas before starfield render
-    const pw = window.innerWidth * renderer.getPixelRatio();
-    const ph = window.innerHeight * renderer.getPixelRatio();
-    renderer.setViewport(0, 0, pw, ph);
-    renderer.setScissorTest(false);
-    renderer.autoClear = true;
     renderer.render(scene, camera);
-
-    // Run registered render callbacks (globe, etc.)
-    for (let i = 0; i < renderCallbacks.length; i++) {
-      renderCallbacks[i]();
-    }
-
-    if (!revealed) {
-      revealed = true;
-      canvas.style.opacity = '1';
-    }
   }
 
   animate();
-
-  return renderer;
 }

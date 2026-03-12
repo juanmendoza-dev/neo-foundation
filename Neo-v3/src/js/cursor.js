@@ -1,6 +1,9 @@
 import gsap from 'gsap';
 
 export function initCursor() {
+  // Skip entirely on touch devices
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+
   const reticle = document.querySelector('.cursor-reticle');
   if (!reticle) return;
 
@@ -12,12 +15,14 @@ export function initCursor() {
   window.addEventListener('mousemove', (e) => {
     tx = e.clientX;
     ty = e.clientY;
-  });
+  }, { passive: true });
 
   function update() {
-    cx += (tx - cx) * 0.15;
-    cy += (ty - cy) * 0.15;
-    gsap.set(reticle, { x: cx, y: cy });
+    if (!document.hidden) {
+      cx += (tx - cx) * 0.15;
+      cy += (ty - cy) * 0.15;
+      gsap.set(reticle, { x: cx, y: cy });
+    }
     requestAnimationFrame(update);
   }
 
@@ -33,7 +38,7 @@ export function initCursor() {
         duration: 0.3,
       });
     }
-  });
+  }, { passive: true });
 
   document.addEventListener('mouseout', (e) => {
     if (e.target.closest('a, button, [data-hover]')) {
@@ -44,5 +49,5 @@ export function initCursor() {
         duration: 0.3,
       });
     }
-  });
+  }, { passive: true });
 }

@@ -8,22 +8,30 @@ const DAMPING = 0.95;
 const VELOCITY_THRESHOLD = 0.001;
 const CLICK_THRESHOLD = 5; // px — less than this = click, not drag
 
-// Preloaded texture (starts loading immediately on import)
+// Lazy-loaded texture — only fetched on first click
 let earthTexture = null;
+let textureLoading = false;
 const textureLoader = new THREE.TextureLoader();
-textureLoader.load(EARTH_TEXTURE_URL, (tex) => {
-  tex.colorSpace = THREE.SRGBColorSpace;
-  earthTexture = tex;
-});
 
 /**
- * Creates an interactive globe rendered via scissor on the shared starfield canvas.
+ * Creates an interactive globe rendered on its own dedicated canvas.
  * @param {HTMLElement} container - The .hero-globe div (used for positioning + events)
- * @param {THREE.WebGLRenderer} sharedRenderer - The starfield's renderer
- * @returns {Function} renderCallback to be called each frame from starfield loop
  */
-export function initGlobe(container, sharedRenderer) {
-  if (!container || !sharedRenderer) return null;
+export function initGlobe(container) {
+  if (!container) return;
+
+  const canvas = container.querySelector('#globe-canvas');
+  if (!canvas) return;
+
+  // ── Own renderer — fully transparent background ──
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: true,
+  });
+  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(container.offsetWidth, container.offsetHeight);
 
   // ── Scene setup ───────────────────────────────
   const scene = new THREE.Scene();
@@ -133,7 +141,7 @@ export function initGlobe(container, sharedRenderer) {
     velocityY = 0;
 
     window.addEventListener('pointermove', onPointerMove, { passive: false });
-    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointerup', onPointerUp, { passive: true });
   }
 
   function onPointerMove(e) {
@@ -177,6 +185,21 @@ export function initGlobe(container, sharedRenderer) {
   }
 
   // ── Toggle wireframe ↔ Earth ──────────────────
+  function transitionToEarth() {
+    earthSphere.visible = true;
+    atmosSphere.visible = true;
+
+    gsap.to(wireMat1, { opacity: 0, duration: 0.8, ease: 'power2.inOut' });
+    gsap.to(wireMat2, { opacity: 0, duration: 0.8, ease: 'power2.inOut' });
+    gsap.to(earthMat, { opacity: 1, duration: 0.8, ease: 'power2.inOut' });
+    gsap.to(atmosMat, { opacity: 0.12, duration: 0.8, ease: 'power2.inOut' });
+    gsap.to(sunLight, { intensity: 1.8, duration: 0.8, ease: 'power2.inOut' });
+    gsap.to(ambientLight, { intensity: 0.3, duration: 0.8, ease: 'power2.inOut',
+      onComplete: () => { transitioning = false; },
+    });
+    isEarthMode = true;
+  }
+
   function toggleEarthMode() {
     if (transitioning) return;
     transitioning = true;
@@ -185,24 +208,29 @@ export function initGlobe(container, sharedRenderer) {
     gsap.to(tooltip, { opacity: 0, duration: 0.3, overwrite: true });
 
     if (!isEarthMode) {
-      // Wireframe → Earth
+      // Wireframe → Earth — lazy-load texture on first click
       if (earthTexture) {
         earthMat.map = earthTexture;
         earthMat.needsUpdate = true;
+        transitionToEarth();
+      } else if (!textureLoading) {
+        textureLoading = true;
+        // Pulse wireframe opacity as loading indicator
+        gsap.to(wireMat1, { opacity: 0.15, duration: 0.4, yoyo: true, repeat: -1, ease: 'sine.inOut', overwrite: 'auto' });
+        textureLoader.load(EARTH_TEXTURE_URL, (tex) => {
+          tex.colorSpace = THREE.SRGBColorSpace;
+          earthTexture = tex;
+          textureLoading = false;
+          gsap.killTweensOf(wireMat1);
+          wireMat1.opacity = 0.25;
+          earthMat.map = earthTexture;
+          earthMat.needsUpdate = true;
+          transitionToEarth();
+        });
+      } else {
+        // Already loading — wait
+        transitioning = false;
       }
-      earthSphere.visible = true;
-      atmosSphere.visible = true;
-
-      // Crossfade: wireframe out, Earth in
-      gsap.to(wireMat1, { opacity: 0, duration: 0.8, ease: 'power2.inOut' });
-      gsap.to(wireMat2, { opacity: 0, duration: 0.8, ease: 'power2.inOut' });
-      gsap.to(earthMat, { opacity: 1, duration: 0.8, ease: 'power2.inOut' });
-      gsap.to(atmosMat, { opacity: 0.12, duration: 0.8, ease: 'power2.inOut' });
-      gsap.to(sunLight, { intensity: 1.8, duration: 0.8, ease: 'power2.inOut' });
-      gsap.to(ambientLight, { intensity: 0.3, duration: 0.8, ease: 'power2.inOut',
-        onComplete: () => { transitioning = false; },
-      });
-      isEarthMode = true;
     } else {
       // Earth → Wireframe
       gsap.to(wireMat1, { opacity: 0.25, duration: 0.8, ease: 'power2.inOut' });
@@ -224,8 +252,28 @@ export function initGlobe(container, sharedRenderer) {
   // Prevent globe container from triggering scroll
   container.style.touchAction = 'none';
 
-  // ── Render callback (called each frame by starfield) ──
-  function render() {
+  // ── Viewport visibility — pause rendering when off-screen ──
+  let isVisible = true;
+  const observer = new IntersectionObserver(([entry]) => {
+    isVisible = entry.isIntersecting;
+  }, { threshold: 0 });
+  observer.observe(container);
+
+  // ── Resize handler ────────────────────────────
+  window.addEventListener('resize', () => {
+    const w = container.offsetWidth;
+    const h = container.offsetHeight;
+    renderer.setSize(w, h);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  }, { passive: true });
+
+  // ── Standalone render loop ────────────────────
+  function animate() {
+    requestAnimationFrame(animate);
+
+    // Skip rendering when tab is hidden or globe is off-screen
+    if (document.hidden || !isVisible) return;
+
     // Apply momentum when not dragging
     if (!isDragging) {
       const absVx = Math.abs(velocityX);
@@ -253,37 +301,8 @@ export function initGlobe(container, sharedRenderer) {
     wireSphere2.rotation.x = Math.PI / 6;
     wireSphere2.rotation.y = Math.PI / 4;
 
-    // ── Scissor render into globe's DOM rect ────
-    const rect = container.getBoundingClientRect();
-    const canvasRect = sharedRenderer.domElement.getBoundingClientRect();
-    const pixelRatio = sharedRenderer.getPixelRatio();
-
-    // Convert DOM coords to canvas pixel coords (Y is flipped)
-    const x = (rect.left - canvasRect.left) * pixelRatio;
-    const y = (canvasRect.bottom - rect.bottom) * pixelRatio;
-    const w = rect.width * pixelRatio;
-    const h = rect.height * pixelRatio;
-
-    // Skip if offscreen
-    if (rect.bottom < 0 || rect.top > window.innerHeight) return;
-
-    const prevAutoClear = sharedRenderer.autoClear;
-    sharedRenderer.autoClear = false;
-    sharedRenderer.setScissorTest(true);
-    sharedRenderer.setScissor(x, y, w, h);
-    sharedRenderer.setViewport(x, y, w, h);
-
-    // Clear just the globe region (transparent)
-    sharedRenderer.setClearColor(0x000000, 0);
-    sharedRenderer.clear(true, true, false);
-
-    sharedRenderer.render(scene, camera);
-
-    // Restore
-    sharedRenderer.setScissorTest(false);
-    sharedRenderer.setViewport(0, 0, canvasRect.width * pixelRatio, canvasRect.height * pixelRatio);
-    sharedRenderer.autoClear = prevAutoClear;
+    renderer.render(scene, camera);
   }
 
-  return render;
+  animate();
 }

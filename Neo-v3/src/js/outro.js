@@ -40,17 +40,24 @@ export function initOutro() {
     ease: 'power3.out',
   }, '-=0.6');
 
-  // Brief glow pulse on the teal line
-  tl.to(line2, {
-    textShadow: '0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(6, 182, 212, 0.3)',
+  // Brief glow pulse on the teal line — animate pseudo-element opacity
+  const line2Glow = { val: 0 };
+  tl.to(line2Glow, {
+    val: 1,
     duration: 0.5,
     ease: 'power2.in',
+    onUpdate: () => {
+      line2.style.setProperty('--glow-opacity', line2Glow.val);
+    },
   }, '-=0.3');
 
-  tl.to(line2, {
-    textShadow: '0 0 20px rgba(6, 182, 212, 0.3)',
+  tl.to(line2Glow, {
+    val: 0,
     duration: 0.8,
     ease: 'power2.out',
+    onUpdate: () => {
+      line2.style.setProperty('--glow-opacity', line2Glow.val);
+    },
   });
 
   // Divider

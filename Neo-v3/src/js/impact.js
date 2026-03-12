@@ -21,7 +21,7 @@ export function initImpact() {
   gsap.set(ping, { opacity: 0, scale: 0 });
   gsap.set(stats, { opacity: 0, scale: 0.8 });
   gsap.set(label, { opacity: 0 });
-  gsap.set(title, { opacity: 0, y: 30, filter: 'blur(6px)' });
+  gsap.set(title, { opacity: 0, y: 30 });
   gsap.set(note, { opacity: 0 });
 
   // ── Master timeline triggered on scroll ──
@@ -51,7 +51,6 @@ export function initImpact() {
   tl.to(title, {
     opacity: 1,
     y: 0,
-    filter: 'blur(0px)',
     duration: 0.8,
     ease: 'power3.out',
   }, '-=0.3');

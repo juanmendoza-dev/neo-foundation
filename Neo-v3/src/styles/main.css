@@ -8,8 +8,6 @@
      Supernova gold:   #F59E0B
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;600;700;900&family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
-
 :root {
   --black: #0a0a0f;
   --purple: #6B21A8;
@@ -27,8 +25,13 @@
   box-sizing: border-box;
 }
 
+html, body {
+  background-color: #0a0a0f;
+  margin: 0;
+  padding: 0;
+}
+
 html {
-  background: var(--black);
   color: var(--white);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
@@ -98,28 +101,16 @@ body {
 /* ── Grain Overlay ───────────────────────── */
 .grain-overlay {
   position: fixed;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 9999;
+  pointer-events: none;
   opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  animation: grain 0.5s steps(1) infinite;
-}
-
-@keyframes grain {
-  0%, 100% { transform: translate(0, 0); }
-  10% { transform: translate(-5%, -10%); }
-  20% { transform: translate(-15%, 5%); }
-  30% { transform: translate(7%, -25%); }
-  40% { transform: translate(-5%, 25%); }
-  50% { transform: translate(-15%, 10%); }
-  60% { transform: translate(15%, 0%); }
-  70% { transform: translate(0%, 15%); }
-  80% { transform: translate(3%, 35%); }
-  90% { transform: translate(-10%, 10%); }
+  background-repeat: repeat;
+  background-size: 200px 200px;
 }
 
 /* ── Starfield Canvas ────────────────────── */
@@ -130,8 +121,8 @@ body {
   width: 100%;
   height: 100%;
   z-index: 0;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  background-color: #0a0a0f;
+  display: block;
 }
 
 /* ── Hero Section ────────────────────────── */
@@ -231,6 +222,9 @@ body {
 .hero-letter {
   display: inline-block;
   will-change: color;
+  line-height: 1;
+  padding: 0;
+  margin: 0;
 }
 
 /* Horizontal lines */
@@ -271,7 +265,7 @@ body {
   opacity: 0;
 }
 
-/* Globe — interactive region rendered via scissor on starfield canvas */
+/* Globe — independent canvas overlaid on starfield */
 .hero-globe {
   margin-top: 2.5rem;
   opacity: 0;
@@ -281,6 +275,17 @@ body {
   cursor: grab;
   touch-action: none;
   user-select: none;
+}
+
+#globe-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: auto;
+  background: transparent;
 }
 
 .hero-globe:active {
@@ -360,24 +365,24 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 0%;
+  height: 100%;
   background: linear-gradient(180deg, var(--teal), rgba(107, 33, 168, 0.6));
   border-radius: 1px;
   box-shadow: 0 0 6px rgba(6, 182, 212, 0.3);
-  transition: height 0.05s linear;
+  transform-origin: top center;
+  transform: scaleY(0);
 }
 
 .mission-track-dot {
   position: absolute;
   left: 50%;
-  top: 0%;
+  top: 0;
   width: 8px;
   height: 8px;
   background: var(--teal);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 8px var(--teal), 0 0 20px rgba(6, 182, 212, 0.4);
-  transition: top 0.05s linear;
 }
 
 /* Glow trail behind the dot */
@@ -435,7 +440,7 @@ body {
   background: linear-gradient(90deg, transparent, var(--purple), var(--teal), var(--purple), transparent);
   opacity: 0.4;
   transition: none;
-  will-change: width;
+  will-change: transform;
 }
 
 .orbital-dot {
@@ -620,7 +625,6 @@ body {
 .ch2-title {
   opacity: 0;
   transform: translateY(30px);
-  filter: blur(6px);
 }
 
 .const-map-panel {
@@ -856,7 +860,6 @@ body {
 .ch3-title {
   opacity: 0;
   transform: translateY(30px);
-  filter: blur(6px);
 }
 
 .hud-content {
@@ -1028,7 +1031,6 @@ body {
 .ch4-title {
   opacity: 0;
   transform: translateY(30px);
-  filter: blur(6px);
 }
 
 .crew-content {
@@ -1175,7 +1177,7 @@ body {
 .crew-holographic {
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 100%;
   height: 100%;
   background: linear-gradient(
@@ -1187,7 +1189,7 @@ body {
     transparent 70%
   );
   pointer-events: none;
-  transition: none;
+  transform: translateX(-100%);
 }
 
 .crew-card:hover .crew-holographic {
@@ -1195,8 +1197,8 @@ body {
 }
 
 @keyframes holographic-sweep {
-  from { left: -100%; }
-  to   { left: 200%; }
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(200%); }
 }
 
 .crew-note {
@@ -1219,7 +1221,6 @@ body {
 .ch5-title {
   opacity: 0;
   transform: translateY(30px);
-  filter: blur(6px);
 }
 
 .involve-content {
@@ -1557,6 +1558,20 @@ body {
   font-size: clamp(1.1rem, 2.5vw, 1.6rem);
   color: var(--teal);
   text-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+  position: relative;
+}
+
+.outro-line-2::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--teal);
+  text-shadow: 0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(6, 182, 212, 0.3);
+  opacity: var(--glow-opacity, 0);
+  pointer-events: none;
 }
 
 /* ── Divider ────────────────────────────── */

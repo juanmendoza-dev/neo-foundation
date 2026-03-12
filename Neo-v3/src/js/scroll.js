@@ -8,13 +8,14 @@ let hasScrolled = false;
 window.addEventListener('scroll', () => { hasScrolled = true; }, { once: true });
 
 export function initScroll(lenis) {
-  // Sync Lenis with GSAP ScrollTrigger — proper bidirectional sync
+  // Sync Lenis with GSAP ScrollTrigger
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((time) => {
     lenis.raf(time * 1000);
   });
-  // Re-enable lag smoothing — disabling it causes frame spikes to propagate
-  gsap.ticker.lagSmoothing(500, 33);
+  // Disable lag smoothing — prevents GSAP from "catching up" after a spike
+  // which causes a second stutter. This is the recommended setting for Lenis.
+  gsap.ticker.lagSmoothing(0);
 
   initScrollProgress();
   initBackgroundShifts();
@@ -41,16 +42,15 @@ function initScrollProgress() {
   });
 
   // Update fill height and dot position on scroll
-  ScrollTrigger.create({
-    trigger: document.body,
-    start: 'top top',
-    end: 'bottom bottom',
-    onUpdate: (self) => {
-      const pct = self.progress * 100;
-      fill.style.height = pct + '%';
-      dot.style.top = pct + '%';
-    },
-  });
+  // Use transform instead of top/height to avoid layout recalculation
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = scrollHeight > 0 ? Math.min(scrollTop / scrollHeight, 1) : 0;
+    fill.style.transform = `scaleY(${progress})`;
+    const trackHeight = dot.parentElement.offsetHeight;
+    gsap.set(dot, { y: progress * trackHeight });
+  }, { passive: true });
 }
 
 // ── Background Color Shifts ─────────────
@@ -59,6 +59,8 @@ function initBackgroundShifts() {
 
   chapters.forEach((chapter) => {
     const bg = chapter.dataset.bg;
+    const endColor = hexToRgb(bg);
+    const startColor = [10, 10, 15]; // #0a0a0f
 
     ScrollTrigger.create({
       trigger: chapter,
@@ -66,12 +68,10 @@ function initBackgroundShifts() {
       end: 'top 20%',
       onUpdate: (self) => {
         if (!hasScrolled) return;
-        const startColor = [10, 10, 15]; // #0a0a0f
-        const endColor = hexToRgb(bg);
         const r = Math.round(startColor[0] + (endColor[0] - startColor[0]) * self.progress);
         const g = Math.round(startColor[1] + (endColor[1] - startColor[1]) * self.progress);
         const b = Math.round(startColor[2] + (endColor[2] - startColor[2]) * self.progress);
-        document.documentElement.style.background = `rgb(${r},${g},${b})`;
+        document.documentElement.style.backgroundColor = `rgb(${r},${g},${b})`;
       },
     });
 
@@ -82,12 +82,10 @@ function initBackgroundShifts() {
       end: 'bottom 20%',
       onUpdate: (self) => {
         if (!hasScrolled) return;
-        const startColor = [10, 10, 15];
-        const endColor = hexToRgb(bg);
         const r = Math.round(endColor[0] + (startColor[0] - endColor[0]) * self.progress);
         const g = Math.round(endColor[1] + (startColor[1] - endColor[1]) * self.progress);
         const b = Math.round(endColor[2] + (startColor[2] - endColor[2]) * self.progress);
-        document.documentElement.style.background = `rgb(${r},${g},${b})`;
+        document.documentElement.style.backgroundColor = `rgb(${r},${g},${b})`;
       },
     });
   });
@@ -148,8 +146,10 @@ function initOrbitalDividers() {
       },
     });
 
+    // Use scaleX instead of width to avoid layout recalculation
+    gsap.set(line, { width: '60%', scaleX: 0, transformOrigin: 'center' });
     tl.to(line, {
-      width: '60%',
+      scaleX: 1,
       duration: 1,
       ease: 'power2.out',
     });
@@ -180,15 +180,14 @@ function initChapter1() {
     },
   });
 
-  // Chapter title — reveal with clip
+  // Chapter title — use opacity + y only (no filter: blur)
   const title = chapter.querySelector('.chapter-title');
   gsap.fromTo(
     title,
-    { opacity: 0, y: 40, filter: 'blur(6px)' },
+    { opacity: 0, y: 40 },
     {
       opacity: 1,
       y: 0,
-      filter: 'blur(0px)',
       duration: 1,
       ease: 'power3.out',
       scrollTrigger: {
@@ -251,12 +250,11 @@ function initChapter2Intro() {
     });
   }
 
-  // Chapter title
+  // Chapter title — opacity + y only (no filter: blur)
   if (title) {
     gsap.to(title, {
       opacity: 1,
       y: 0,
-      filter: 'blur(0px)',
       duration: 1,
       ease: 'power3.out',
       scrollTrigger: {
@@ -289,18 +287,19 @@ function initChapter2Intro() {
   // Background shift for chapter 2
   const bg = wrapper.dataset.bg;
   if (bg) {
+    const endColor = hexToRgb(bg);
+    const startColor = [10, 10, 15];
+
     ScrollTrigger.create({
       trigger: wrapper,
       start: 'top 80%',
       end: 'top 20%',
       onUpdate: (self) => {
         if (!hasScrolled) return;
-        const startColor = [10, 10, 15];
-        const endColor = hexToRgb(bg);
         const r = Math.round(startColor[0] + (endColor[0] - startColor[0]) * self.progress);
         const g = Math.round(startColor[1] + (endColor[1] - startColor[1]) * self.progress);
         const b = Math.round(startColor[2] + (endColor[2] - startColor[2]) * self.progress);
-        document.documentElement.style.background = `rgb(${r},${g},${b})`;
+        document.documentElement.style.backgroundColor = `rgb(${r},${g},${b})`;
       },
     });
   }

@@ -1,8 +1,7 @@
 import gsap from 'gsap';
 import { initGlobe } from './globe.js';
-import { addRenderCallback } from './starfield.js';
 
-export function initHero(sharedRenderer) {
+export function initHero() {
   const hero = document.getElementById('hero');
   if (!hero) return;
 
@@ -25,18 +24,10 @@ export function initHero(sharedRenderer) {
   gsap.set(glow, { opacity: 0 });
   gsap.set(tagline, { opacity: 0, y: 20 });
   gsap.set(globeContainer, { opacity: 0 });
-  gsap.set(titleEl, { letterSpacing: '0.2em' });
-
   // ── Master timeline ─────────────────────────
   const tl = gsap.timeline({ delay: 0.3 });
 
   // 1. Word reveal — each word slides up from behind clip mask
-  tl.to(titleEl, {
-    letterSpacing: '0.02em',
-    duration: 1.2,
-    ease: 'power3.out',
-  }, 0);
-
   words.forEach((word, i) => {
     tl.to(word, {
       yPercent: 0,
@@ -88,8 +79,7 @@ export function initHero(sharedRenderer) {
     duration: 0.8,
     ease: 'power2.out',
     onStart: () => {
-      const renderFn = initGlobe(globeContainer, sharedRenderer);
-      if (renderFn) addRenderCallback(renderFn);
+      initGlobe(globeContainer);
     },
   }, afterReveal + 0.6);
 
@@ -182,8 +172,8 @@ function startSparkleLife(star, baseOpacity, originX, originY) {
     const driftDuration = 3 + Math.random() * 4;
 
     gsap.to(star, {
-      left: `${originX + driftX}px`,
-      top: `${originY + driftY}px`,
+      x: driftX,
+      y: driftY,
       duration: driftDuration,
       ease: 'sine.inOut',
       onComplete: drift,
@@ -230,8 +220,8 @@ function startMicroShootingStar(container, bounds, initialDelay) {
       {
         opacity: 0.8,
         scale: 1,
-        left: `${startX + Math.cos(angle) * distance}px`,
-        top: `${startY + Math.sin(angle) * distance}px`,
+        x: Math.cos(angle) * distance,
+        y: Math.sin(angle) * distance,
         duration: 0.4,
         ease: 'power2.out',
         onComplete: () => {
@@ -280,40 +270,11 @@ function initCursorSweep(titleEl) {
     allLetterSpans.push(periodEl);
   }
 
-  const heroContent = titleEl.closest('.hero-content');
+  let sweepActive = false;
 
-  heroContent.addEventListener('mousemove', (e) => {
-    const rect = titleEl.getBoundingClientRect();
-    const cursorX = (e.clientX - rect.left) / rect.width; // 0 to 1
-
-    allLetterSpans.forEach((span, i) => {
-      const letterPos = i / (allLetterSpans.length - 1);
-      const distance = Math.abs(cursorX - letterPos);
-
-      let color;
-      if (distance < 0.05) {
-        color = '#06B6D4'; // Cosmic teal — directly under cursor
-      } else if (distance < 0.15) {
-        // Blend from teal to purple
-        const t = (distance - 0.05) / 0.10;
-        color = lerpColor('#06B6D4', '#6B21A8', t);
-      } else if (distance < 0.25) {
-        // Blend from purple back to white
-        const t = (distance - 0.15) / 0.10;
-        color = lerpColor('#6B21A8', '#E2E8F0', t);
-      } else {
-        color = '#E2E8F0'; // Star white
-      }
-
-      gsap.to(span, {
-        color: color,
-        duration: 0.15,
-        overwrite: 'auto',
-      });
-    });
-  });
-
-  heroContent.addEventListener('mouseleave', () => {
+  function resetAllLetters() {
+    if (!sweepActive) return;
+    sweepActive = false;
     allLetterSpans.forEach((span) => {
       gsap.to(span, {
         color: '#E2E8F0',
@@ -322,7 +283,48 @@ function initCursorSweep(titleEl) {
         overwrite: 'auto',
       });
     });
-  });
+  }
+
+  function applySweep(e) {
+    const rect = titleEl.getBoundingClientRect();
+    const cursorX = (e.clientX - rect.left) / rect.width; // 0 to 1
+
+    sweepActive = true;
+    allLetterSpans.forEach((span, i) => {
+      const letterPos = i / (allLetterSpans.length - 1);
+      const distance = Math.abs(cursorX - letterPos);
+
+      let color;
+      if (distance < 0.05) {
+        color = '#06B6D4'; // Cosmic teal — directly under cursor
+      } else if (distance < 0.15) {
+        const t = (distance - 0.05) / 0.10;
+        color = lerpColor('#06B6D4', '#6B21A8', t);
+      } else if (distance < 0.25) {
+        const t = (distance - 0.15) / 0.10;
+        color = lerpColor('#6B21A8', '#E2E8F0', t);
+      } else {
+        color = '#E2E8F0';
+      }
+
+      gsap.to(span, {
+        color: color,
+        duration: 0.15,
+        overwrite: 'auto',
+      });
+    });
+  }
+
+  // Listen on the document so we catch all movement, then check if
+  // the element under the cursor is actually a letter span.
+  document.addEventListener('mousemove', (e) => {
+    const target = document.elementFromPoint(e.clientX, e.clientY);
+    if (target && (target.classList.contains('hero-letter') || target.classList.contains('hero-period'))) {
+      applySweep(e);
+    } else {
+      resetAllLetters();
+    }
+  }, { passive: true });
 }
 
 // ── Color lerp utility ──────────────────────────
